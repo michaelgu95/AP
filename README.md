@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #Starter Ionic Application Template with Parse Integration
 ---
 ## Overiew
@@ -152,3 +153,7 @@ Screenshot of Tutor Sessions Objects
 
 
 
+=======
+# AP
+Trivia game for AP Exam preparation, in and out of class.
+>>>>>>> c2c5fb91a40527293f3106cddc24c2b707c0da20
