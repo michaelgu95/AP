@@ -44,7 +44,7 @@ angular.module('app.services', [])
 				    Parse.User.current().set("score", 0);
 				    Parse.User.current().save();
 
-				    users = [Parse.User.current().get("username")];
+				    var users = [Parse.User.current().get("username")];
 				    game.set("users", users);
         			
 			        var Question = Parse.Object.extend("Question");
@@ -96,7 +96,7 @@ angular.module('app.services', [])
 			   	enterGame: function(gameToEnter, user){
 			   		var defer = $q.defer();
 			   		game = gameToEnter;
-			   		users = gameToEnter.users;
+			   		var users = gameToEnter.users;
 			   		questions = gameToEnter.questions;
 
 			   		var Game = Parse.Object.extend("Game");
