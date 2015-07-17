@@ -1,0 +1,39 @@
+<ion-view title="Choose Settings">
+
+	<ion-nav-buttons side="left">
+        <a class="button icon-left ion-chevron-left button-clear" href="#/tab/list">Back</a>
+    </ion-nav-buttons>
+
+	<ion-content>
+		<div class="list">
+			<label class="item item-input item-select">
+				<div class="input-label">
+					Subject
+				</div>
+
+				<select ng-model="subject">
+					<option selected>Psychology</option>
+					<option>Chemistry</option>
+				</select>
+			</label>
+
+
+			<label class="item item-input item-select">
+				<div class="input-label">
+					Opponent
+				</div>
+
+				<select ng-model="opponentMode">
+					<option >Invite Friend</option>
+					<option selected> Random </option>
+				</select>
+			</label>
+
+		</div>
+
+		<button class="button button-balanced button-full" ng-click="startGame(subject)">
+			Start Game
+		</button>
+
+	</ion-content>
+</ion-view>

@@ -33,14 +33,12 @@ angular.module('app.services', [])
         function ($q, ParseConfiguration) {
         	var questions = new Array();
         	var Game = Parse.Object.extend("Game");
-			game = new Game();
-        	var users = [];
+			var game = new Game();
 
         	return {
-        		createGame: function($scope){
+        		createGame: function($scope, subject){
 
-        			
-
+        			var subject = subject;
 				    Parse.User.current().set("score", 0);
 				    Parse.User.current().save();
 
@@ -49,6 +47,8 @@ angular.module('app.services', [])
         			
 			        var Question = Parse.Object.extend("Question");
 			        var query = new Parse.Query(Question);
+			        query.equalTo("subject", subject);
+
 			        query.find().then(function(results) {
 			                $scope.$apply(function(){
 			                    for (i in results) {
@@ -94,6 +94,9 @@ angular.module('app.services', [])
 			   	},
 
 			   	enterGame: function(gameToEnter, user){
+			   		Parse.User.current().set("score", 0);
+				    Parse.User.current().save();
+
 			   		var defer = $q.defer();
 			   		game = gameToEnter;
 			   		var users = gameToEnter.users;
@@ -110,22 +113,33 @@ angular.module('app.services', [])
 			   		// 	users.push(user);
 			   		// })
 			   		
-					var gameFromQuery = new Game();
-			   		query.find().then(function(result){
-			   				gameFromQuery = result;
-			   				defer.resolve('user successfully entered game');
-			   		});
+					
+			   		query.find({
+			   			success: function(results){
 
-			   		users.push(user);
-			   		gameFromQuery.set("users", users);
-			   		gameFromQuery.save(null, {
-			   			success: function(object){
-			   				return defer.promise;
+				   			for(i in results){
+				   				users.push(user);
+				   				var gameFromQuery = results[i];
+				   				gameFromQuery.addUnique("users", user);
+				   				gameFromQuery.save(null, {
+						   			success: function(object){
+						   				defer.resolve('user successfully entered game');
+						   				
+						   			},
+								  	error:function(err) { 
+									  	console.log("Not successfully saved");
+									  	defer.resolve('error in entering game');
+								   	}	
+						   		});
+
+				   				
+			   				}	
+			   			}, 
+			   			error: function(error){
+			   				console.log("Erorr in query of game to enter");
 			   			}
 			   		});
-			   		
-
-			   		
+			   		return defer.promise;
 			   	}
 			}
     }]);

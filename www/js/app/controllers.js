@@ -16,8 +16,8 @@ angular.module('app.controllers', [])
 
             $scope.questions = new Array();
             $scope.createGame = function(){
-                GameService.createGame($scope);
-                $state.go('game');
+                $state.go('createGame');
+               
             }
 
             $scope.findGame = function(){
@@ -36,6 +36,15 @@ angular.module('app.controllers', [])
                 })
             };
         })
+
+    .controller('CreateGameCtrl', function($state, $scope, GameService){
+       
+
+        $scope.startGame = function(subject){
+            GameService.createGame($scope, subject);
+            $state.go('game');
+        }
+    })
 
     .controller('GameCtrl', function($state, $scope, GameService){
         $scope.questions = GameService.getQuestions();
@@ -82,8 +91,10 @@ angular.module('app.controllers', [])
 
         $scope.enterGame = function(game){
             GameService.enterGame(game, user).then(function(string){
-                $state.go('game');
+                console.log(string);
+                
             })
+            $state.go('game');
         }
     })
 

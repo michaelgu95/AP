@@ -59,6 +59,12 @@ angular.module('starter',
                 controller: "GameRoomCtrl"
             })
 
+            .state('createGame', {
+                url:"/createGame", 
+                templateUrl: "templates/createGame.html", 
+                controller: "CreateGameCtrl"
+            })
+
             // setup an abstract state for the tabs directive, check for a user
             // object here is the resolve, if there is no user then redirect the
             // user back to login state on the changeStateError
