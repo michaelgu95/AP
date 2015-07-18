@@ -37,12 +37,18 @@ angular.module('app.controllers', [])
             };
         })
 
-    .controller('CreateGameCtrl', function($state, $scope, GameService){
-       
-
+    .controller('CreateGameCtrl', function($state, $scope, GameService, $ionicLoading){
+ 
         $scope.startGame = function(subject){
-            GameService.createGame($scope, subject);
-            $state.go('game');
+
+            $ionicLoading.show({
+              noBackdrop: true,
+              template: '<p class="item-icon-left">Finding Opponent<ion-spinner icon="ripple"/></p>'
+            });
+
+
+            // GameService.createGame($scope, subject);
+            // $state.go('game');
         }
     })
 
@@ -90,11 +96,12 @@ angular.module('app.controllers', [])
         }
 
         $scope.enterGame = function(game){
-            GameService.enterGame(game, user).then(function(string){
+            GameService.enterGame(game).then(function(string){
                 console.log(string);
-                
+                $state.go('game');
             })
-            $state.go('game');
+            
+            
         }
     })
 

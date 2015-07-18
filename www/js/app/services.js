@@ -6,6 +6,7 @@ angular.module('app.services', [])
 		 	getGames : function($scope) {
 			    	var Game = Parse.Object.extend("Game");
 			    	var query = new Parse.Query(Game);
+			    	query.notEqualTo("creator", Parse.User.current());
 			    	query.find().then(function(results){
 			    		$scope.$apply(function(){
 			    			for(i in results) {
@@ -18,12 +19,12 @@ angular.module('app.services', [])
 			    					users: users,
 			    					subject: subject, 
 			    					id: id, 
-			    					questions : questions
+			    					questions : questions, 
+			    					object: obj
 			    				})
 			    			}
 			    		})
 			    	})
-
 			    	return games;
 			    }
 		 }
@@ -44,6 +45,7 @@ angular.module('app.services', [])
 
 				    var users = [Parse.User.current().get("username")];
 				    game.set("users", users);
+				    game.set("creator", Parse.User.current());
         			
 			        var Question = Parse.Object.extend("Question");
 			        var query = new Parse.Query(Question);
@@ -93,35 +95,37 @@ angular.module('app.services', [])
 			   		}
 			   	},
 
-			   	enterGame: function(gameToEnter, user){
+			   	getUsers : function(game){
+			   		var Game = Parse.Object.extend("Game");
+			    	var query = new Parse.Query(Game);
+			    	var users = [];
+			    	query.equalTo("objectId", game.id);
+			    	query.find().then(function(results){
+			    		
+			    			for(i in results) {
+			    				var game = results[i];
+			    				var users = game.get("users");
+			    			}
+			    	})
+			    	return users;
+			   	},
+
+			   	enterGame: function(gameToEnter){
+			   		var defer = $q.defer();
+
+			   		//set user's score as 0 
 			   		Parse.User.current().set("score", 0);
 				    Parse.User.current().save();
-
-			   		var defer = $q.defer();
-			   		game = gameToEnter;
+				    
+				    //add users to array
 			   		var users = gameToEnter.users;
+			   		users.push(Parse.User.current().get("username"));
+
 			   		questions = gameToEnter.questions;
 
-			   		var Game = Parse.Object.extend("Game");
-			   		var query = new Parse.Query(Game);
-			   		query.equalTo("objectId", gameToEnter.id);
-
-			   		// query.find().then(function(results){
-			   		// 	game = results[0];
-			   		// 	questions = results[0].get("questions");
-			   		// 	users = results[0].get("users");
-			   		// 	users.push(user);
-			   		// })
-			   		
-					
-			   		query.find({
-			   			success: function(results){
-
-				   			for(i in results){
-				   				users.push(user);
-				   				var gameFromQuery = results[i];
-				   				gameFromQuery.addUnique("users", user);
-				   				gameFromQuery.save(null, {
+			   		game = gameToEnter.object;
+			   		game.set("users", users);
+			   		game.save(null, {
 						   			success: function(object){
 						   				defer.resolve('user successfully entered game');
 						   				
@@ -132,13 +136,51 @@ angular.module('app.services', [])
 								   	}	
 						   		});
 
+
+			   		// query.find().then(function(results){
+			   		// 	for(i in results){
+			   		// 		game = results[i];
+			   		// 		game.set("users", users);
+			   		// 		game.save();
+			   		// 		game.save(null, {
+						  //  			success: function(object){
+						  //  				defer.resolve('user successfully entered game');
+						   				
+						  //  			},
+								//   	error:function(err) { 
+								// 	  	console.log("Not successfully saved");
+								// 	  	defer.resolve('error in entering game');
+								//    	}	
+						  //  		});
+			   		// 	}
+			   			
+			   		// })
+			   		
+					
+			   		// query.find({
+			   		// 	success: function(results){
+
+				   	// 		for(i in results){
+				   	// 			game = results[i];
+				   	// 			game.addUnique("users", Parse.User.current().get("username"));
+				   				// game.save(null, {
+						   		// 	success: function(object){
+						   		// 		defer.resolve('user successfully entered game');
+						   				
+						   		// 	},
+								  	// error:function(err) { 
+									  // 	console.log("Not successfully saved");
+									  // 	defer.resolve('error in entering game');
+								   // 	}	
+						   		// });
+
 				   				
-			   				}	
-			   			}, 
-			   			error: function(error){
-			   				console.log("Erorr in query of game to enter");
-			   			}
-			   		});
+			   		// 		}	
+			   		// 	}, 
+			   		// 	error: function(error){
+			   		// 		console.log("Erorr in query of game to enter");
+			   		// 	}
+			   		// });
 			   		return defer.promise;
 			   	}
 			}
