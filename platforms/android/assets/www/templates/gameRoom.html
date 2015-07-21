@@ -1,0 +1,24 @@
+<ion-view title="Game Room">
+
+	<ion-nav-buttons side="left">
+        <a class="button icon-left ion-chevron-left button-clear" href="#/tab/list">Back</a>
+    </ion-nav-buttons>
+
+	<ion-content>
+		
+			<div class="list card" >
+				<div class="item item-divider">
+			    	Games
+			  	</div>
+		
+
+				<div class="item item-avatar" ng-repeat="game in games" ng-click="enterGame(game)">
+		            <img ng-src="{{getSubjectImage(game.subject)}}">
+		            <h2>{{game.subject}}</h2>
+		            <p>Created by {{getGameCreator(game)}}</p>
+	          	</div>
+					
+			</div>
+	
+	</ion-content>
+</ion-view>

@@ -1,0 +1,27 @@
+<ion-view title="Game has Started">
+  
+    <ion-content>
+
+        <div class="list card" ng-repeat="q in questions" ng-show="$index == currentQuestionIndex">
+            
+          <div class="item item-avatar">
+            <img ng-src="{{getSubjectImage(q.subject)}}">
+            <h2>{{q.subject}}</h2>
+            <p>Score: {{score}}</p>
+          </div>
+          <div class="item item-icon-left">
+            <i class="icon ion-ios-help-outline"></i>
+            {{q.title}}
+          </div>
+
+          <div ng-repeat="choice in q.choices">
+            <a ng-click="choiceSelected($index)" class="item item-icon-left">
+                <i class="icon ion-ios-play-outline"></i>
+                {{choice}}
+            </a>
+          </div>
+
+
+        </div>
+    </ion-content>
+</ion-view>

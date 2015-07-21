@@ -1,0 +1,282 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'update', '-g' ]
+2 info using npm@2.12.0
+3 info using node@v0.10.5
+4 silly mapToRegistry name express
+5 silly mapToRegistry using default registry
+6 silly mapToRegistry registry https://registry.npmjs.org/
+7 silly mapToRegistry uri https://registry.npmjs.org/express
+8 silly mapToRegistry name node-login
+9 silly mapToRegistry using default registry
+10 silly mapToRegistry registry https://registry.npmjs.org/
+11 silly mapToRegistry uri https://registry.npmjs.org/node-login
+12 silly mapToRegistry name cordova
+13 silly mapToRegistry using default registry
+14 silly mapToRegistry registry https://registry.npmjs.org/
+15 silly mapToRegistry uri https://registry.npmjs.org/cordova
+16 silly mapToRegistry name gulp
+17 silly mapToRegistry using default registry
+18 silly mapToRegistry registry https://registry.npmjs.org/
+19 silly mapToRegistry uri https://registry.npmjs.org/gulp
+20 silly mapToRegistry name npm
+21 silly mapToRegistry using default registry
+22 silly mapToRegistry registry https://registry.npmjs.org/
+23 silly mapToRegistry uri https://registry.npmjs.org/npm
+24 silly mapToRegistry name npmdoctor
+25 silly mapToRegistry using default registry
+26 silly mapToRegistry registry https://registry.npmjs.org/
+27 silly mapToRegistry uri https://registry.npmjs.org/npmdoctor
+28 silly mapToRegistry name bower
+29 silly mapToRegistry using default registry
+30 silly mapToRegistry registry https://registry.npmjs.org/
+31 silly mapToRegistry uri https://registry.npmjs.org/bower
+32 silly mapToRegistry name ionic
+33 silly mapToRegistry using default registry
+34 silly mapToRegistry registry https://registry.npmjs.org/
+35 silly mapToRegistry uri https://registry.npmjs.org/ionic
+36 silly mapToRegistry name n
+37 silly mapToRegistry using default registry
+38 silly mapToRegistry registry https://registry.npmjs.org/
+39 silly mapToRegistry uri https://registry.npmjs.org/n
+40 silly mapToRegistry name phonegap
+41 silly mapToRegistry using default registry
+42 silly mapToRegistry registry https://registry.npmjs.org/
+43 silly mapToRegistry uri https://registry.npmjs.org/phonegap
+44 verbose request uri https://registry.npmjs.org/node-login
+45 verbose request no auth needed
+46 info attempt registry request try #1 at 14:37:56
+47 verbose request id d015b56f37f13d30
+48 http request GET https://registry.npmjs.org/node-login
+49 verbose request uri https://registry.npmjs.org/gulp
+50 verbose request no auth needed
+51 info attempt registry request try #1 at 14:37:56
+52 verbose etag "BDFVT08QHYOU326L802L1H9T7"
+53 http request GET https://registry.npmjs.org/gulp
+54 verbose request uri https://registry.npmjs.org/cordova
+55 verbose request no auth needed
+56 info attempt registry request try #1 at 14:37:56
+57 verbose etag "1PQCBCSNJDHDLR6CBVFT7DFCP"
+58 http request GET https://registry.npmjs.org/cordova
+59 verbose request uri https://registry.npmjs.org/express
+60 verbose request no auth needed
+61 info attempt registry request try #1 at 14:37:56
+62 verbose etag "X0ZNFS2DQHUP515ML56GA5HB"
+63 http request GET https://registry.npmjs.org/express
+64 verbose request uri https://registry.npmjs.org/npmdoctor
+65 verbose request no auth needed
+66 info attempt registry request try #1 at 14:37:56
+67 verbose etag "DVWH7UOQQJ9AUAUN7BIZDX5NF"
+68 http request GET https://registry.npmjs.org/npmdoctor
+69 verbose request uri https://registry.npmjs.org/bower
+70 verbose request no auth needed
+71 info attempt registry request try #1 at 14:37:56
+72 verbose etag "D166K4DV3FKFHHDXX16WKIR59"
+73 http request GET https://registry.npmjs.org/bower
+74 verbose request uri https://registry.npmjs.org/ionic
+75 verbose request no auth needed
+76 info attempt registry request try #1 at 14:37:56
+77 verbose etag "9FGH7TJ77QVPQ1KHA849I1YE7"
+78 http request GET https://registry.npmjs.org/ionic
+79 verbose request uri https://registry.npmjs.org/n
+80 verbose request no auth needed
+81 info attempt registry request try #1 at 14:37:56
+82 verbose etag "A6DLH7V5AU2GX4ZWDFIR89JJE"
+83 http request GET https://registry.npmjs.org/n
+84 verbose request uri https://registry.npmjs.org/npm
+85 verbose request no auth needed
+86 info attempt registry request try #1 at 14:37:57
+87 verbose etag "6YHGZ99F8ZZHAMKHGVT871YQJ"
+88 http request GET https://registry.npmjs.org/npm
+89 verbose request uri https://registry.npmjs.org/phonegap
+90 verbose request no auth needed
+91 info attempt registry request try #1 at 14:37:57
+92 verbose etag "8EANNG53YJBZXSBSXLGT01JJR"
+93 http request GET https://registry.npmjs.org/phonegap
+94 http 304 https://registry.npmjs.org/npmdoctor
+95 silly get cb [ 304,
+95 silly get   { date: 'Tue, 21 Jul 2015 19:37:57 GMT',
+95 silly get     via: '1.1 varnish',
+95 silly get     'cache-control': 'max-age=60',
+95 silly get     etag: '"DVWH7UOQQJ9AUAUN7BIZDX5NF"',
+95 silly get     age: '31',
+95 silly get     connection: 'keep-alive',
+95 silly get     'x-served-by': 'cache-dfw1828-DFW',
+95 silly get     'x-cache': 'HIT',
+95 silly get     'x-cache-hits': '1',
+95 silly get     'x-timer': 'S1437507477.509198,VS0,VE0',
+95 silly get     vary: 'Accept' } ]
+96 verbose etag https://registry.npmjs.org/npmdoctor from cache
+97 verbose get saving npmdoctor to /Users/michaelgu/.npm/registry.npmjs.org/npmdoctor/.cache.json
+98 http 304 https://registry.npmjs.org/cordova
+99 silly get cb [ 304,
+99 silly get   { date: 'Tue, 21 Jul 2015 19:37:57 GMT',
+99 silly get     via: '1.1 varnish',
+99 silly get     'cache-control': 'max-age=60',
+99 silly get     etag: '"1PQCBCSNJDHDLR6CBVFT7DFCP"',
+99 silly get     age: '19',
+99 silly get     connection: 'keep-alive',
+99 silly get     'x-served-by': 'cache-dfw1820-DFW',
+99 silly get     'x-cache': 'HIT',
+99 silly get     'x-cache-hits': '1',
+99 silly get     'x-timer': 'S1437507477.514708,VS0,VE2',
+99 silly get     vary: 'Accept' } ]
+100 verbose etag https://registry.npmjs.org/cordova from cache
+101 verbose get saving cordova to /Users/michaelgu/.npm/registry.npmjs.org/cordova/.cache.json
+102 http 304 https://registry.npmjs.org/gulp
+103 silly get cb [ 304,
+103 silly get   { date: 'Tue, 21 Jul 2015 19:37:57 GMT',
+103 silly get     via: '1.1 varnish',
+103 silly get     'cache-control': 'max-age=60',
+103 silly get     etag: '"BDFVT08QHYOU326L802L1H9T7"',
+103 silly get     age: '26',
+103 silly get     connection: 'keep-alive',
+103 silly get     'x-served-by': 'cache-dfw1835-DFW',
+103 silly get     'x-cache': 'HIT',
+103 silly get     'x-cache-hits': '415',
+103 silly get     'x-timer': 'S1437507477.520890,VS0,VE0',
+103 silly get     vary: 'Accept' } ]
+104 verbose etag https://registry.npmjs.org/gulp from cache
+105 verbose get saving gulp to /Users/michaelgu/.npm/registry.npmjs.org/gulp/.cache.json
+106 http 304 https://registry.npmjs.org/bower
+107 silly get cb [ 304,
+107 silly get   { date: 'Tue, 21 Jul 2015 19:37:57 GMT',
+107 silly get     via: '1.1 varnish',
+107 silly get     'cache-control': 'max-age=60',
+107 silly get     etag: '"D166K4DV3FKFHHDXX16WKIR59"',
+107 silly get     age: '6',
+107 silly get     connection: 'keep-alive',
+107 silly get     'x-served-by': 'cache-dfw1828-DFW',
+107 silly get     'x-cache': 'HIT',
+107 silly get     'x-cache-hits': '88',
+107 silly get     'x-timer': 'S1437507477.556430,VS0,VE0',
+107 silly get     vary: 'Accept' } ]
+108 verbose etag https://registry.npmjs.org/bower from cache
+109 verbose get saving bower to /Users/michaelgu/.npm/registry.npmjs.org/bower/.cache.json
+110 http 304 https://registry.npmjs.org/express
+111 silly get cb [ 304,
+111 silly get   { date: 'Tue, 21 Jul 2015 19:37:57 GMT',
+111 silly get     via: '1.1 varnish',
+111 silly get     'cache-control': 'max-age=60',
+111 silly get     etag: '"X0ZNFS2DQHUP515ML56GA5HB"',
+111 silly get     age: '0',
+111 silly get     connection: 'keep-alive',
+111 silly get     'x-served-by': 'cache-dfw1827-DFW',
+111 silly get     'x-cache': 'HIT',
+111 silly get     'x-cache-hits': '1',
+111 silly get     'x-timer': 'S1437507477.511064,VS0,VE50',
+111 silly get     vary: 'Accept' } ]
+112 verbose etag https://registry.npmjs.org/express from cache
+113 verbose get saving express to /Users/michaelgu/.npm/registry.npmjs.org/express/.cache.json
+114 http 304 https://registry.npmjs.org/ionic
+115 silly get cb [ 304,
+115 silly get   { date: 'Tue, 21 Jul 2015 19:37:57 GMT',
+115 silly get     via: '1.1 varnish',
+115 silly get     'cache-control': 'max-age=60',
+115 silly get     etag: '"9FGH7TJ77QVPQ1KHA849I1YE7"',
+115 silly get     age: '19',
+115 silly get     connection: 'keep-alive',
+115 silly get     'x-served-by': 'cache-dfw1820-DFW',
+115 silly get     'x-cache': 'HIT',
+115 silly get     'x-cache-hits': '1',
+115 silly get     'x-timer': 'S1437507477.560265,VS0,VE1',
+115 silly get     vary: 'Accept' } ]
+116 verbose etag https://registry.npmjs.org/ionic from cache
+117 verbose get saving ionic to /Users/michaelgu/.npm/registry.npmjs.org/ionic/.cache.json
+118 http 304 https://registry.npmjs.org/n
+119 silly get cb [ 304,
+119 silly get   { date: 'Tue, 21 Jul 2015 19:37:57 GMT',
+119 silly get     via: '1.1 varnish',
+119 silly get     'cache-control': 'max-age=60',
+119 silly get     etag: '"A6DLH7V5AU2GX4ZWDFIR89JJE"',
+119 silly get     age: '57',
+119 silly get     connection: 'keep-alive',
+119 silly get     'x-served-by': 'cache-dfw1835-DFW',
+119 silly get     'x-cache': 'HIT',
+119 silly get     'x-cache-hits': '2',
+119 silly get     'x-timer': 'S1437507477.564772,VS0,VE0',
+119 silly get     vary: 'Accept' } ]
+120 verbose etag https://registry.npmjs.org/n from cache
+121 verbose get saving n to /Users/michaelgu/.npm/registry.npmjs.org/n/.cache.json
+122 http 404 https://registry.npmjs.org/node-login
+123 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+123 verbose headers   'content-type': 'application/json',
+123 verbose headers   'cache-control': 'max-age=0',
+123 verbose headers   'content-length': '51',
+123 verbose headers   'accept-ranges': 'bytes',
+123 verbose headers   date: 'Tue, 21 Jul 2015 19:37:57 GMT',
+123 verbose headers   via: '1.1 varnish',
+123 verbose headers   connection: 'keep-alive',
+123 verbose headers   'x-served-by': 'cache-dfw1825-DFW',
+123 verbose headers   'x-cache': 'MISS',
+123 verbose headers   'x-cache-hits': '0',
+123 verbose headers   'x-timer': 'S1437507477.512910,VS0,VE50' }
+124 silly get cb [ 404,
+124 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+124 silly get     'content-type': 'application/json',
+124 silly get     'cache-control': 'max-age=0',
+124 silly get     'content-length': '51',
+124 silly get     'accept-ranges': 'bytes',
+124 silly get     date: 'Tue, 21 Jul 2015 19:37:57 GMT',
+124 silly get     via: '1.1 varnish',
+124 silly get     connection: 'keep-alive',
+124 silly get     'x-served-by': 'cache-dfw1825-DFW',
+124 silly get     'x-cache': 'MISS',
+124 silly get     'x-cache-hits': '0',
+124 silly get     'x-timer': 'S1437507477.512910,VS0,VE50' } ]
+125 http 304 https://registry.npmjs.org/phonegap
+126 silly get cb [ 304,
+126 silly get   { date: 'Tue, 21 Jul 2015 19:37:57 GMT',
+126 silly get     via: '1.1 varnish',
+126 silly get     'cache-control': 'max-age=60',
+126 silly get     etag: '"8EANNG53YJBZXSBSXLGT01JJR"',
+126 silly get     age: '31',
+126 silly get     connection: 'keep-alive',
+126 silly get     'x-served-by': 'cache-dfw1827-DFW',
+126 silly get     'x-cache': 'HIT',
+126 silly get     'x-cache-hits': '1',
+126 silly get     'x-timer': 'S1437507477.610974,VS0,VE1',
+126 silly get     vary: 'Accept' } ]
+127 verbose etag https://registry.npmjs.org/phonegap from cache
+128 verbose get saving phonegap to /Users/michaelgu/.npm/registry.npmjs.org/phonegap/.cache.json
+129 http 304 https://registry.npmjs.org/npm
+130 silly get cb [ 304,
+130 silly get   { date: 'Tue, 21 Jul 2015 19:37:57 GMT',
+130 silly get     via: '1.1 varnish',
+130 silly get     'cache-control': 'max-age=60',
+130 silly get     etag: '"6YHGZ99F8ZZHAMKHGVT871YQJ"',
+130 silly get     age: '16',
+130 silly get     connection: 'keep-alive',
+130 silly get     'x-served-by': 'cache-dfw1828-DFW',
+130 silly get     'x-cache': 'HIT',
+130 silly get     'x-cache-hits': '1',
+130 silly get     'x-timer': 'S1437507477.603763,VS0,VE11',
+130 silly get     vary: 'Accept' } ]
+131 verbose etag https://registry.npmjs.org/npm from cache
+132 verbose get saving npm to /Users/michaelgu/.npm/registry.npmjs.org/npm/.cache.json
+133 verbose stack Error: 404 Not Found: node-login
+133 verbose stack     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:245:14)
+133 verbose stack     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:170:14)
+133 verbose stack     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:197:22)
+133 verbose stack     at Request.EventEmitter.emit (events.js:98:17)
+133 verbose stack     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1050:14)
+133 verbose stack     at Request.EventEmitter.emit (events.js:117:20)
+133 verbose stack     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:996:12)
+133 verbose stack     at IncomingMessage.EventEmitter.emit (events.js:117:20)
+133 verbose stack     at _stream_readable.js:895:16
+133 verbose stack     at process._tickCallback (node.js:415:13)
+134 verbose statusCode 404
+135 verbose pkgid node-login
+136 verbose cwd /Users/michaelgu/Ionic/AP/AP
+137 error Darwin 14.4.0
+138 error argv "node" "/usr/local/bin/npm" "update" "-g"
+139 error node v0.10.5
+140 error npm  v2.12.0
+141 error code E404
+142 error 404 Not Found: node-login
+142 error 404
+142 error 404 'node-login' is not in the npm registry.
+142 error 404 You should bug the author to publish it (or use the name yourself!)
+142 error 404
+142 error 404 Note that you can also install from a
+142 error 404 tarball, folder, http url, or git url.
+143 verbose exit [ 1, true ]
