@@ -60,7 +60,7 @@ angular.module('app.controllers', [])
 
     .controller('GameCtrl', function($state, $scope, GameService, $ionicNavBarDelegate){
         $ionicNavBarDelegate.showBackButton(false);
-        
+
         $scope.questions = GameService.getQuestions();
         $scope.score = 0;
         $scope.currentQuestionIndex = 0;
@@ -73,9 +73,9 @@ angular.module('app.controllers', [])
         }
 
         $scope.choiceSelected = function(index){
-            // if(index == ($scope.questions.length-1)){
-            //     GameService.gameOver();
-            // }
+            if($scope.currentQuestionIndex == ($scope.questions.length-1)){
+                $state.go('gameEnded');
+            }
 
             var isCorrect = GameService.checkAnswer($scope.currentQuestionIndex, index, Parse.User.current(), $scope);
             if(isCorrect){
@@ -93,12 +93,23 @@ angular.module('app.controllers', [])
         }
     })
 
+    .controller('GameEndedCtrl', function($scope, GameService){
+        $scope.score = Parse.User.current().get("score");
+        $scope.wrongQuestions = GameService.getWrongQuestions();
+        $scope.rightQuestions = GameService.getRightQuestions();
+    })
+
     .controller('GameRoomCtrl', function($scope, $state, GameService, GameRoomService, UserService){
         $scope.games = GameRoomService.getGames($scope);
+
         var user = UserService.currentUser();
 
         $scope.getGameCreator = function(game){
             return game.users[0];
+        }
+
+        $scope.getQuestionCount = function(game){
+            return game.questions.length;
         }
 
         $scope.getSubjectImage = function(subject){

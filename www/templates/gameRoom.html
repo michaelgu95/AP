@@ -14,7 +14,7 @@
 
 				<div class="item item-avatar" ng-repeat="game in games" ng-click="enterGame(game)">
 		            <img ng-src="{{getSubjectImage(game.subject)}}">
-		            <h2>{{game.subject}}</h2>
+		            <h2>{{game.subject}} - {{getQuestionCount(game)}} Questions</h2>
 		            <p>Created by {{getGameCreator(game)}}</p>
 	          	</div>
 					

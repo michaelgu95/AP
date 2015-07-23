@@ -36,6 +36,8 @@ angular.module('app.services', [])
         	var Game = Parse.Object.extend("Game");
 			var game = new Game();
 			var otherUsersJoined = false;
+			var wrongQuestions = new Array();
+			var rightQuestions = new Array();
 
         	return {
         		createGame: function($scope, subject, count){
@@ -75,37 +77,17 @@ angular.module('app.services', [])
 			        });
 			    },
 
-			   	getQuestions : function(){
-			   		return questions;
-			   	},
-
-
-			   	getScore : function(user){
-			   		return user.get("score");
-			   	},
-
-			   	getUsers : function(){
-			   		if(game){
-			   			return game.users;
-			   		}else{
-			   			console.log("No game being played");
-			   		}
-			    	
-			   	},
-
-			   	otherUsersJoined: function(){
-			   		return otherUsersJoined;
-			   	},
-
-			   	checkAnswer : function(questionIndex, answerIndex, user, $scope){
+			    checkAnswer : function(questionIndex, answerIndex, user, $scope){
 			   		var question = questions[questionIndex];
 
 			   		if(question.answer == question.choices[answerIndex]){
 			   			user.increment("score", 1000);
 			   			$scope.score = user.get("score");
 			   			user.save();
+			   			rightQuestions.push(question);
 			   			return true;
 			   		}else{
+			   			wrongQuestions.push(question);
 			   			return false;
 			   		}
 			   	},
@@ -138,6 +120,37 @@ angular.module('app.services', [])
 			   		//broadcast that a user has joined
 			   		$rootScope.$broadcast('user:joined', Parse.User.current());
 			   		return defer.promise;
-			   	}
+			   	},
+
+			   	getQuestions : function(){
+			   		return questions;
+			   	},
+
+
+			   	getScore : function(user){
+			   		return user.get("score");
+			   	},
+
+			   	getUsers : function(){
+			   		if(game){
+			   			return game.users;
+			   		}else{
+			   			console.log("No game being played");
+			   		}
+			    	
+			   	},
+
+			   	otherUsersJoined: function(){
+			   		return otherUsersJoined;
+			   	},
+
+				getRightQuestions : function(){
+					return rightQuestions;
+				},
+
+				getWrongQuestions : function(){
+					return wrongQuestions;
+				}
+
 			}
     }]);

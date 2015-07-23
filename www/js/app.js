@@ -53,6 +53,12 @@ angular.module('starter',
                 controller: "GameCtrl"
             })
 
+            .state('gameEnded', {
+                url: "/gameEnded",
+                templateUrl: "templates/gameEnded.html",
+                controller: "GameEndedCtrl"
+            })
+
             .state('gameRoom', {
                 url:"/gameRoom",
                 templateUrl: "templates/gameRoom.html",
