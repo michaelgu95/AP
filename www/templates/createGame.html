@@ -6,34 +6,45 @@
 
 	<ion-content>
 		<div ng-hide="waiting">
-			<div class="list">
+			
+
+				<!-- Subject -->
 				<label class="item item-input item-select">
 					<div class="input-label">
 						Subject
 					</div>
-
 					<select ng-model="subject">
 						<option selected>Psychology</option>
-						<option>Chemistry</option>
+						<option>World History</option>
 					</select>
 				</label>
 
 
+				<!-- Question Count -->
+				<div class="item range range-positive">
+					<div class="input-label">
+						Question Count
+					</div>
+				
+				    <input type="range" name="volume" min="0" max="30" value="10" ng-model="count">
+				   {{count}}
+			  	</div>
+
+				<!-- Mode -->
 				<label class="item item-input item-select">
 					<div class="input-label">
-						Opponent
+						Mode
 					</div>
 
 					<select ng-model="opponentMode">
 						<option >Invite Friend</option>
 						<option selected> Random </option>
+						<option selected> Class </option>
 					</select>
 				</label>
 
-			</div>
-
-			<button class="button button-balanced button-full" ng-click="startGame(subject)">
-				Start Game
+			<button class="button button-balanced button-full" ng-click="startGame(subject, count)">
+				Create Game
 			</button>
 
 		</div>

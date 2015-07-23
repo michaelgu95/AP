@@ -38,24 +38,29 @@ angular.module('app.controllers', [])
         })
 
     .controller('CreateGameCtrl', function($state, $scope, GameService, $ionicLoading){
- 
-        $scope.startGame = function(subject){
-            GameService.createGame($scope, subject);
 
-            $ionicLoading.show({
-              noBackdrop: true,
-              template: '<p class="item-icon-left">Finding Opponent<ion-spinner icon="ripple"/></p>'
-            });
+
+        $scope.startGame = function(subject, count){
+            GameService.createGame($scope, subject, count);
+
+            // $ionicLoading.show({
+            //   noBackdrop: true,
+            //   template: '<p class="item-icon-left">Finding Opponent<ion-spinner icon="ripple"/></p>'
+            // });
 
             //watch for users to join game
-            $scope.$on('user:joined', function(event,data){
-                $ionicLoading.hide();
-                $state.go('game');   
-            })
+            // $scope.$on('user:joined', function(event,data){
+            //     $ionicLoading.hide();
+                 
+            // })
+
+            $state.go('game');  
         }
     })
 
-    .controller('GameCtrl', function($state, $scope, GameService){
+    .controller('GameCtrl', function($state, $scope, GameService, $ionicNavBarDelegate){
+        $ionicNavBarDelegate.showBackButton(false);
+        
         $scope.questions = GameService.getQuestions();
         $scope.score = 0;
         $scope.currentQuestionIndex = 0;

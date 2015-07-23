@@ -38,8 +38,8 @@ angular.module('app.services', [])
 			var otherUsersJoined = false;
 
         	return {
-        		createGame: function($scope, subject){
-
+        		createGame: function($scope, subject, count){
+        			game = new Game();
         			var subject = subject;
 				    Parse.User.current().set("score", 0);
 				    Parse.User.current().save();
@@ -50,16 +50,17 @@ angular.module('app.services', [])
         			
 			        var Question = Parse.Object.extend("Question");
 			        var query = new Parse.Query(Question);
-			        query.equalTo("subject", subject);
+			        query.equalTo("Subject", subject);
+			        query.limit(count);
 
 			        query.find().then(function(results) {
 			                $scope.$apply(function(){
 			                    for (i in results) {
 			                        var obj = results[i];
 			                        var title = obj.get("title");
-			                        var choices = obj.get("choices");
-			                        var subject = obj.get("subject");
-			                        var answer = obj.get("answer");
+			                        var choices = obj.get("Answers");
+			                        var subject = obj.get("Subject");
+			                        var answer = obj.get("Answer");
 			                        questions.push({
 			                            title:title,
 			                            choices:choices,
