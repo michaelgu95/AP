@@ -39,11 +39,19 @@
 					<select ng-model="opponentMode">
 						<option >Invite Friend</option>
 						<option selected> Random </option>
-						<option selected> Class </option>
+						<option value="class"> Class </option>
 					</select>
 				</label>
 
-			<button class="button button-balanced button-full" ng-click="startGame(subject, count)">
+				<label class="item item-input" ng-show="opponentMode == 'class'">
+					<div class="input-label">
+						Class Key
+					</div>
+					<input type="text" ng-model="classKey">
+				</label>
+
+
+			<button class="button button-balanced button-full" ng-click="startGame(subject, count, classKey)">
 				Create Game
 			</button>
 

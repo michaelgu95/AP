@@ -1,4 +1,9 @@
 <ion-view title="Game has Started">
+
+  <ion-nav-buttons side="right">
+        <a class="button icon-left ion-flag button-stable" href="#/tab/list" ng-click="endGame()">End</a>
+    </ion-nav-buttons>
+
   
     <ion-content>
 
@@ -9,18 +14,20 @@
             <h2>{{q.subject}}</h2>
             <p>Score: {{score}}</p>
           </div>
-          <div class="item item-icon-left">
+
+          <div class="item item-icon-left item-text-wrap">
             <i class="icon ion-ios-help-outline"></i>
             {{q.title}}
           </div>
-
+          
+          <ion-list>
           <div ng-repeat="choice in q.choices">
-            <a ng-click="choiceSelected($index)" class="item item-icon-left">
+            <a ng-click="choiceSelected($index)" class="item item-icon-left item-text-wrap">
                 <i class="icon ion-ios-play-outline"></i>
                 {{choice}}
             </a>
           </div>
-
+          </ion-list>
 
         </div>
     </ion-content>

@@ -53,6 +53,12 @@ angular.module('starter',
                 controller: "GameCtrl"
             })
 
+            .state('gameEnded', {
+                url: "/gameEnded",
+                templateUrl: "templates/gameEnded.html",
+                controller: "GameEndedCtrl"
+            })
+
             .state('gameRoom', {
                 url:"/gameRoom",
                 templateUrl: "templates/gameRoom.html",
@@ -63,6 +69,12 @@ angular.module('starter',
                 url:"/createGame", 
                 templateUrl: "templates/createGame.html", 
                 controller: "CreateGameCtrl"
+            })
+
+            .state('studyMode', {
+                url:"/studyMode", 
+                templateUrl: "templates/studyMode.html", 
+                controller: "StudyModeCtrl"
             })
 
             // setup an abstract state for the tabs directive, check for a user

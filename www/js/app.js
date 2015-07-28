@@ -71,6 +71,12 @@ angular.module('starter',
                 controller: "CreateGameCtrl"
             })
 
+            .state('studyMode', {
+                url:"/studyMode", 
+                templateUrl: "templates/studyMode.html", 
+                controller: "StudyModeCtrl"
+            })
+
             // setup an abstract state for the tabs directive, check for a user
             // object here is the resolve, if there is no user then redirect the
             // user back to login state on the changeStateError

@@ -1,0 +1,14 @@
+{
+  "global": {
+    "parseVersion": "1.5.0"
+  },
+  "applications": {
+    "AP 2": {
+      "applicationId": "e5THYZRVw6ytai2tbYsDVa7eQlvRNLc8MQ2lvd4k",
+      "masterKey": "o4Q3DpeCntLAGS5R3kPyW0fHJhkNoslArJSze9jr"
+    },
+    "_default": {
+      "link": "AP 2"
+    }
+  }
+}

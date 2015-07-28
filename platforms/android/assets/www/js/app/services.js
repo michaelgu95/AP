@@ -6,7 +6,7 @@ angular.module('app.services', [])
 		 	getGames : function($scope) {
 			    	var Game = Parse.Object.extend("Game");
 			    	var query = new Parse.Query(Game);
-			    	query.notEqualTo("creator", Parse.User.current());
+			    	// query.notEqualTo("creator", Parse.User.current());
 			    	query.find().then(function(results){
 			    		$scope.$apply(function(){
 			    			for(i in results) {
@@ -15,12 +15,14 @@ angular.module('app.services', [])
 			    				var subject = obj.get("subject");
 			    				var id = obj.get("objectId");
 			    				var questions = obj.get("questions");
+			    				var classKey = obj.get("classKey");
 			    				games.push({
 			    					users: users,
 			    					subject: subject, 
 			    					id: id, 
 			    					questions : questions, 
-			    					object: obj
+			    					object: obj, 
+			    					classKey: classKey
 			    				})
 			    			}
 			    		})
@@ -33,13 +35,15 @@ angular.module('app.services', [])
     .service('GameService', ['$q', 'ParseConfiguration', '$rootScope',
         function ($q, ParseConfiguration, $rootScope) {
         	var questions = new Array();
+        	var wrongQuestions = new Array();
+			var rightQuestions = new Array();
+			var selections = new Array();
         	var Game = Parse.Object.extend("Game");
 			var game = new Game();
-			var otherUsersJoined = false;
 
         	return {
-        		createGame: function($scope, subject){
-
+        		createGame: function($scope, subject, count){
+        			game = new Game();
         			var subject = subject;
 				    Parse.User.current().set("score", 0);
 				    Parse.User.current().save();
@@ -50,16 +54,17 @@ angular.module('app.services', [])
         			
 			        var Question = Parse.Object.extend("Question");
 			        var query = new Parse.Query(Question);
-			        query.equalTo("subject", subject);
+			        query.equalTo("Subject", subject);
+			        query.limit(count);
 
 			        query.find().then(function(results) {
 			                $scope.$apply(function(){
 			                    for (i in results) {
 			                        var obj = results[i];
 			                        var title = obj.get("title");
-			                        var choices = obj.get("choices");
-			                        var subject = obj.get("subject");
-			                        var answer = obj.get("answer");
+			                        var choices = obj.get("Answers");
+			                        var subject = obj.get("Subject");
+			                        var answer = obj.get("Answer");
 			                        questions.push({
 			                            title:title,
 			                            choices:choices,
@@ -74,42 +79,71 @@ angular.module('app.services', [])
 			        });
 			    },
 
-			   	getQuestions : function(){
-			   		return questions;
-			   	},
+			    createSecretGame: function($scope, subject, count, classKey){
+        			game = new Game();
+        			var subject = subject;
+        			var classKey = classKey;
+				    Parse.User.current().set("score", 0);
+				    Parse.User.current().save();
 
+				    var users = [Parse.User.current().get("username")];
+				    game.set("users", users);
+				    game.set("creator", Parse.User.current());
+				    game.set("classKey", classKey);
+        			
+			        var Question = Parse.Object.extend("Question");
+			        var query = new Parse.Query(Question);
+			        query.equalTo("Subject", subject);
+			        query.limit(count);
 
-			   	getScore : function(user){
-			   		return user.get("score");
-			   	},
+			        query.find().then(function(results) {
+			                $scope.$apply(function(){
+			                    for (i in results) {
+			                        var obj = results[i];
+			                        var title = obj.get("title");
+			                        var choices = obj.get("Answers");
+			                        var subject = obj.get("Subject");
+			                        var answer = obj.get("Answer");
+			                        questions.push({
+			                            title:title,
+			                            choices:choices,
+			                            subject:subject,
+			                            answer: answer
+			                        });
+			                    }
+			                    game.set("questions", questions);
+			                    game.set("subject", questions[0].subject);
+				        		game.save(null,{});
+			                })
+			        });
+			    },
 
-			   	getUsers : function(){
-			   		if(game){
-			   			return game.users;
-			   		}else{
-			   			console.log("No game being played");
-			   		}
-			    	
-			   	},
-
-			   	otherUsersJoined: function(){
-			   		return otherUsersJoined;
-			   	},
-
-			   	checkAnswer : function(questionIndex, answerIndex, user, $scope){
+			    checkAnswer : function(questionIndex, answerIndex, user, $scope){
 			   		var question = questions[questionIndex];
 
 			   		if(question.answer == question.choices[answerIndex]){
+			   			//add 1000 points to score and save
 			   			user.increment("score", 1000);
 			   			$scope.score = user.get("score");
 			   			user.save();
+
+			   			//add to right questions
+			   			rightQuestions.push(question);
+
+			   			//store the user's selection for feedback later
+			   			question.selection = question.choices[answerIndex];
+			   			question.wasCorrect = true;
 			   			return true;
 			   		}else{
+			   			//add to wrong questions
+			   			wrongQuestions.push(question);
+			   			question.selection = question.choices[answerIndex];
+			   			question.wasCorrect = false;
 			   			return false;
 			   		}
 			   	},
 
-			   	enterGame: function(gameToEnter){
+			   	enterGame : function(gameToEnter){
 			   		var defer = $q.defer();
 
 			   		//set user's score as 0 
@@ -137,6 +171,84 @@ angular.module('app.services', [])
 			   		//broadcast that a user has joined
 			   		$rootScope.$broadcast('user:joined', Parse.User.current());
 			   		return defer.promise;
-			   	}
+			   	},
+
+			   	endGame : function(){
+			   		Parse.User.current().set("score", 0);
+				    Parse.User.current().save();
+			   		questions = new Array();
+					selections = new Array();
+					game = new Game();
+			   	},
+
+			   	startStudying : function($scope, subject, count){
+        			var subject = subject;
+			        var Question = Parse.Object.extend("Question");
+			        var query = new Parse.Query(Question);
+			        query.equalTo("Subject", subject);
+			        query.limit(count);
+
+			        query.find().then(function(results) {
+			                $scope.$apply(function(){
+			                    for (i in results) {
+			                        var obj = results[i];
+			                        var title = obj.get("title");
+			                        var choices = obj.get("Answers");
+			                        var subject = obj.get("Subject");
+			                        var answer = obj.get("Answer");
+			                        questions.push({
+			                            title:title,
+			                            choices:choices,
+			                            subject:subject,
+			                            answer: answer
+			                        });
+			                    }
+			                    
+			                })
+			        });
+			   	},
+
+			   	checkClassKey : function (classKey){
+
+			   		var defer = $q.defer();
+			   		if(game.classKey == classKey){
+			   			defer.resolve("correct class key");
+			   		}else{
+			   			defer.reject("incorrect class key");
+			   		}
+
+			   		return defer.promise;
+			   	},
+
+			   	getQuestions : function(){
+			   		return questions;
+			   	},
+
+
+			   	getScore : function(user){
+			   		return user.get("score");
+			   	},
+
+			   	getUsers : function(){
+			   		if(game){
+			   			return game.users;
+			   		}else{
+			   			console.log("No game being played");
+			   		}
+			    	
+			   	},
+
+			   	otherUsersJoined: function(){
+			   		return otherUsersJoined;
+			   	},
+
+				getRightQuestions : function(){
+					return rightQuestions;
+				},
+
+				getWrongQuestions : function(){
+					return wrongQuestions;
+				}
+
 			}
     }]);
