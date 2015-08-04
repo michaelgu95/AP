@@ -73,11 +73,43 @@ exports.joinAnonymousGame = function(player, options) {
   })
 }
 
+exports.joinGame = function(match, options){
+ //query the user and save as playerJoining
+  var playerQuery = new Parse.Query(Parse.User);
+  var playerJoining;
+  playerQuery.get(match.user, {
+    success: function(object) {
+      playerJoining = object;
+    },
+    error: function(object, error) {
+      console.error(error);
+    }
+  }); 
+  
+  var matchQuery = new Parse.Query(Match);
+  matchQuery.equalTo(_matchStatusKey, _matchStatusKeyWaiting);
+  matchQuery.equalTo("objectId", match.game);
+  matchQuery.find({
+    success : function(results){
+      if(results.length > 0){
+        _log("found game in database with ID:" + match.game);
+        _joinMatchAttempt(results[0], playerJoining, options);
+      }else {
+        _log("Could not find game", playerJoining);
+      }
+    }, 
+    error: function(error){
+      _log("Could not find game", playerJoining);
+    }
+  })
+}
+
+
 
 // === Core methods ===
 
 _log = function(message, player) {
-  console.log(player.get("username") + "$ " + message);
+  console.log(player + "$ " + message);
 };
 
 _joinMatchAttempt = function(match, player, options) {
@@ -89,8 +121,10 @@ _joinMatchAttempt = function(match, player, options) {
       // Check if the join succeeded
       if (updatedMatch.get(_matchLockKey) <= _matchLockKeyMax) {
         _log("Game lock successful, joining game.", player);
-        match.set(_matchPlayer2Key, player);
+        
+        match.set(_matchPlayer2Key, playerJoining);
         match.set(_matchStatusKey, _matchStatusKeyInProgress);
+        // match.set("users", match.users);
         match.save(null, {
           success: function(newMatch) {
             // Return the game
@@ -100,10 +134,9 @@ _joinMatchAttempt = function(match, player, options) {
             options.success(newMatch, isTurn);
           },
           error: function(error) {
-          console.log(error);
-          };
+          options.error(error);
+          }
         });
-
       } else {
         // If someone else joined game first, give up and create new one
         console.error("COLLISION");
@@ -111,8 +144,8 @@ _joinMatchAttempt = function(match, player, options) {
         _createNewMatch(player, options);
       }
     }, 
-  error: function(error){
-    console.log(error);
+    error: function(error){
+      console.error(error);
     } 
   });
 };
@@ -136,7 +169,7 @@ _createNewMatch = function(player, options) {
       options.success(newMatch, true);
     },
     error: function(error){
-      _log(error)
+      _log(error, player)
     } 
   });
 };

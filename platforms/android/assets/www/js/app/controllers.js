@@ -51,8 +51,6 @@ angular.module('app.controllers', [])
                 GameService.createGame($scope, subject, count);
             }
 
-            
-
             // $ionicLoading.show({
             //   noBackdrop: true,
             //   template: '<p class="item-icon-left">Finding Opponent<ion-spinner icon="ripple"/></p>'
@@ -198,7 +196,7 @@ angular.module('app.controllers', [])
                             type: 'button-positive',
                             onTap: function(e) {
                               GameService.checkClassKey($scope.classKey).then(function(res){
-                                GameService.enterGame(game).then(function(string){
+                                GameService.enterGame(game, $scope).then(function(string){
                                     console.log(string);
                                     $state.go('game');
                                 })
@@ -208,10 +206,8 @@ angular.module('app.controllers', [])
                         ]
                       });
 
-               
-                
              }else{
-                GameService.enterGame(game).then(function(string){
+                GameService.enterGame(game, $scope).then(function(string){
                     console.log(string);
                     $state.go('game');
                 })

@@ -143,7 +143,7 @@ angular.module('app.services', [])
 			   		}
 			   	},
 
-			   	enterGame : function(gameToEnter){
+			   	enterGame : function(gameToEnter, $scope){
 			   		var defer = $q.defer();
 
 			   		//set user's score as 0 
@@ -153,10 +153,13 @@ angular.module('app.services', [])
 				    //add users to array
 			   		var users = gameToEnter.users;
 			   		users.push(Parse.User.current().get("username"));
-
-			   		//set questions and game
 			   		questions = gameToEnter.questions;
 			   		game = gameToEnter.object;
+
+			   		// $scope.$apply(function(){
+			   			
+			   		// })
+			   		//set questions and game
 			   		game.set("users", users);
 			   		game.save(null, {
 						   			success: function(object){
@@ -169,16 +172,24 @@ angular.module('app.services', [])
 								   	}	
 						   		});
 			   		//broadcast that a user has joined
-			   		$rootScope.$broadcast('user:joined', Parse.User.current());
+			   		// Parse.Cloud.run('joinNewGame', {user: Parse.User.current()}, {
+			   		// 	success : function(result){
+			   		// 		console.log(result.match);
+			   		// 	}, 
+			   		// 	error : function(error){
+			   		// 		console.log(error);
+			   		// 	}
+			   		// })
+
 			   		return defer.promise;
 			   	},
 
 			   	endGame : function(){
 			   		Parse.User.current().set("score", 0);
 				    Parse.User.current().save();
-			   		questions = new Array();
-					selections = new Array();
-					game = new Game();
+			  //  		questions = new Array();
+					// selections = new Array();
+					// game = new Game();
 			   	},
 
 			   	startStudying : function($scope, subject, count){
@@ -189,8 +200,8 @@ angular.module('app.services', [])
 			        query.limit(count);
 
 			        query.find().then(function(results) {
-			                $scope.$apply(function(){
-			                    for (i in results) {
+			        	$scope.$apply(function(){
+			            	for (i in results) {
 			                        var obj = results[i];
 			                        var title = obj.get("title");
 			                        var choices = obj.get("Answers");
@@ -203,8 +214,7 @@ angular.module('app.services', [])
 			                            answer: answer
 			                        });
 			                    }
-			                    
-			                })
+			            })
 			        });
 			   	},
 
