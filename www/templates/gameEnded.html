@@ -11,12 +11,12 @@
 			    	Score: {{score}}
 			  	</div>
 
-				<div class="item item-divider">
+				<div class="item item-divider" ng-click="toggleCorrect()">
 			    	Correct Questions ({{rightQuestions.length}})
 			  	</div>
 		
 
-				<div ng-repeat="q in rightQuestions" class="list card">
+				<div ng-repeat="q in rightQuestions" class="item-accordion list card" ng-show="showCorrect">
 		             <a class="item item-icon-right item-text-wrap" ng-click="addQuestion(q)">
 			            <i class="icon ion-bookmark"></i>
 			            {{q.title}}
@@ -35,12 +35,12 @@
 
 
 
-	          	<div class="item item-divider">
+	          	<div class="item item-divider" ng-click="toggleWrong()">
 			    	Wrong Questions ({{wrongQuestions.length}})
 			  	</div>
 		
 
-				<div ng-repeat="q in wrongQuestions" class="list card">
+				<div ng-repeat="q in wrongQuestions" class="list card item-accordion" ng-show="showWrong">
 		             <a class="item item-icon-right item-text-wrap" ng-click="addQuestion(q)">
 			            <i class="icon ion-bookmark"></i>
 			            {{q.title}}

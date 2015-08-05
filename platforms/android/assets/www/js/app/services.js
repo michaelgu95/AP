@@ -16,13 +16,15 @@ angular.module('app.services', [])
 			    				var id = obj.get("objectId");
 			    				var questions = obj.get("questions");
 			    				var classKey = obj.get("classKey");
+								var creator = obj.get("creator");
 			    				games.push({
 			    					users: users,
 			    					subject: subject, 
 			    					id: id, 
 			    					questions : questions, 
 			    					object: obj, 
-			    					classKey: classKey
+			    					classKey: classKey, 
+									creator : creator
 			    				})
 			    			}
 			    		})
@@ -51,6 +53,11 @@ angular.module('app.services', [])
 				    var users = [Parse.User.current().get("username")];
 				    game.set("users", users);
 				    game.set("creator", Parse.User.current());
+				    game.set("player1", Parse.User.current());
+				    game.set("gameStatus", "waiting");
+				    game.set("gameLock", 1);
+				    game.set("turn", "player2");
+
         			
 			        var Question = Parse.Object.extend("Question");
 			        var query = new Parse.Query(Question);
@@ -161,6 +168,9 @@ angular.module('app.services', [])
 			   		// })
 			   		//set questions and game
 			   		game.set("users", users);
+			   		game.increment("gameLock");
+	                game.set("player2", Parse.User.current());
+	                game.set("gameStatus", "in_progress");
 			   		game.save(null, {
 						   			success: function(object){
 						   				defer.resolve('user successfully entered game');
@@ -171,15 +181,20 @@ angular.module('app.services', [])
 									  	defer.resolve('error in entering game');
 								   	}	
 						   		});
-			   		//broadcast that a user has joined
-			   		// Parse.Cloud.run('joinNewGame', {user: Parse.User.current()}, {
-			   		// 	success : function(result){
-			   		// 		console.log(result.match);
-			   		// 	}, 
-			   		// 	error : function(error){
-			   		// 		console.log(error);
-			   		// 	}
-			   		// })
+			   		//broadcast that a user has joined via Parse Cloud
+					// var currentUserID = Parse.User.current().get("objectId");
+					// var gameID = gameToEnter.id;
+			   // 		Parse.Cloud.run('joinGame', 
+			   // 			{game: gameID, user: currentUserID},
+						// {
+						// 	success : function(match, isTurn){
+			   // 				console.log("Joined Game in Cloud, and it is " + isTurn + "'s turn");
+				  //  			}, 
+				  //  			error : function(error){
+				  //  				console.log("Failed to join Game in Cloud");
+				  //  			}
+			   // 			}
+			   // 		)
 
 			   		return defer.promise;
 			   	},

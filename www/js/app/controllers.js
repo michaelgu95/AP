@@ -111,6 +111,8 @@ angular.module('app.controllers', [])
         $scope.wrongQuestions = GameService.getWrongQuestions();
         $scope.rightQuestions = GameService.getRightQuestions();
         var savedQuestions = Parse.User.current().get("savedQuestions");
+        $scope.showCorrect = false;
+        $scope.showWrong = false;
 
 
         $scope.isNormal = function(question,choice){
@@ -146,6 +148,14 @@ angular.module('app.controllers', [])
                 savedQuestions = new Array();
             }
             savedQuestions.push(question);
+        }
+
+        $scope.toggleCorrect = function(){
+            $scope.showCorrect = !$scope.showCorrect;
+        }
+
+        $scope.toggleWrong = function(){
+            $scope.showWrong = !$scope.showWrong;
         }
 
         $scope.saveQuestions = function(){
