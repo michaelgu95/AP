@@ -11,12 +11,13 @@
 			    	Score: {{score}}
 			  	</div>
 
-				<div class="item item-divider" ng-click="toggleCorrect()">
-			    	Correct Questions ({{rightQuestions.length}})
+				<div class="item item-divider item-icon-left" ng-click="toggleCorrect()">
+			    	Correct Questions ({{correctQuestions.length}})
+					<i class="icon" ng-class="showCorrect ? 'ion-android-arrow-dropdown' : 'ion-android-arrow-dropright'"></i>
 			  	</div>
 		
 
-				<div ng-repeat="q in rightQuestions" class="item-accordion list card" ng-show="showCorrect">
+				<div ng-repeat="q in correctQuestions" class="item-accordion list card" ng-show="showCorrect">
 		             <a class="item item-icon-right item-text-wrap" ng-click="addQuestion(q)">
 			            <i class="icon ion-bookmark"></i>
 			            {{q.title}}
@@ -35,8 +36,9 @@
 
 
 
-	          	<div class="item item-divider" ng-click="toggleWrong()">
+	          	<div class="item item-divider item-icon-left" ng-click="toggleWrong()">
 			    	Wrong Questions ({{wrongQuestions.length}})
+			    	<i class="icon" ng-class="showWrong ? 'ion-android-arrow-dropdown' : 'ion-android-arrow-dropright'"></i>
 			  	</div>
 		
 

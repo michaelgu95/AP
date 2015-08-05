@@ -50,13 +50,15 @@ angular.module('starter',
             .state('game', {
                 url: "/game",
                 templateUrl: "templates/game.html",
-                controller: "GameCtrl"
+                controller: "GameCtrl", 
+                params: {'questions': null}
             })
 
             .state('gameEnded', {
                 url: "/gameEnded",
                 templateUrl: "templates/gameEnded.html",
-                controller: "GameEndedCtrl"
+                controller: "GameEndedCtrl",
+                params: {'correctQuestions': null, 'wrongQuestions' : null}
             })
 
             .state('gameRoom', {

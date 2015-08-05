@@ -36,15 +36,13 @@ angular.module('app.services', [])
 
     .service('GameService', ['$q', 'ParseConfiguration', '$rootScope',
         function ($q, ParseConfiguration, $rootScope) {
-        	var questions = new Array();
-        	var wrongQuestions = new Array();
-			var rightQuestions = new Array();
 			var selections = new Array();
         	var Game = Parse.Object.extend("Game");
 			var game = new Game();
 
         	return {
         		createGame: function($scope, subject, count){
+        			var questions = new Array();
         			game = new Game();
         			var subject = subject;
 				    Parse.User.current().set("score", 0);
@@ -84,9 +82,11 @@ angular.module('app.services', [])
 				        		game.save(null,{});
 			                })
 			        });
+			        return questions;
 			    },
 
 			    createSecretGame: function($scope, subject, count, classKey){
+			    	var questions = new Array();
         			game = new Game();
         			var subject = subject;
         			var classKey = classKey;
@@ -123,9 +123,10 @@ angular.module('app.services', [])
 				        		game.save(null,{});
 			                })
 			        });
+			        return questions;
 			    },
 
-			    checkAnswer : function(questionIndex, answerIndex, user, $scope){
+			    checkAnswer : function(questions, questionIndex, answerIndex, user, $scope){
 			   		var question = questions[questionIndex];
 
 			   		if(question.answer == question.choices[answerIndex]){
@@ -133,17 +134,12 @@ angular.module('app.services', [])
 			   			user.increment("score", 1000);
 			   			$scope.score = user.get("score");
 			   			user.save();
-
-			   			//add to right questions
-			   			rightQuestions.push(question);
-
+			   		
 			   			//store the user's selection for feedback later
 			   			question.selection = question.choices[answerIndex];
 			   			question.wasCorrect = true;
 			   			return true;
 			   		}else{
-			   			//add to wrong questions
-			   			wrongQuestions.push(question);
 			   			question.selection = question.choices[answerIndex];
 			   			question.wasCorrect = false;
 			   			return false;
@@ -202,35 +198,46 @@ angular.module('app.services', [])
 			   	endGame : function(){
 			   		Parse.User.current().set("score", 0);
 				    Parse.User.current().save();
+				    // var studyQuestions = new Array();
 			  //  		questions = new Array();
 					// selections = new Array();
 					// game = new Game();
 			   	},
 
 			   	startStudying : function($scope, subject, count){
+			        // game = new Game();
         			var subject = subject;
+				    Parse.User.current().set("score", 0);
+				    Parse.User.current().save();
+
 			        var Question = Parse.Object.extend("Question");
 			        var query = new Parse.Query(Question);
 			        query.equalTo("Subject", subject);
 			        query.limit(count);
 
+			        var studyQ = new Array();
+
 			        query.find().then(function(results) {
-			        	$scope.$apply(function(){
-			            	for (i in results) {
+			                $scope.$apply(function(){
+			                    for (i in results) {
 			                        var obj = results[i];
 			                        var title = obj.get("title");
 			                        var choices = obj.get("Answers");
 			                        var subject = obj.get("Subject");
 			                        var answer = obj.get("Answer");
-			                        questions.push({
+			                        studyQ.push({
 			                            title:title,
 			                            choices:choices,
 			                            subject:subject,
 			                            answer: answer
 			                        });
 			                    }
-			            })
+			                   
+			                })
 			        });
+
+			        return studyQ;
+
 			   	},
 
 			   	checkClassKey : function (classKey){

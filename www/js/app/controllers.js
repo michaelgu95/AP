@@ -45,34 +45,27 @@ angular.module('app.controllers', [])
         var classKey = $scope.classKey;
 
         $scope.startGame = function(subject, count, classKey){
+            var questions = new Array();
             if(classKey){
-                GameService.createSecretGame($scope, subject, count, classKey);
+               questions = GameService.createSecretGame($scope, subject, count, classKey);
             }else{
-                GameService.createGame($scope, subject, count);
+               questions = GameService.createGame($scope, subject, count);
             }
 
-            // $ionicLoading.show({
-            //   noBackdrop: true,
-            //   template: '<p class="item-icon-left">Finding Opponent<ion-spinner icon="ripple"/></p>'
-            // });
 
-            //watch for users to join game
-            // $scope.$on('user:joined', function(event,data){
-            //     $ionicLoading.hide();
-                 
-            // })
-
-            $state.go('game');  
+            $state.go('game', {'questions': questions});  
         }
     })
 
 
-    .controller('GameCtrl', function($state, $scope, GameService, $ionicNavBarDelegate){
+    .controller('GameCtrl', function($state, $scope, GameService, $ionicNavBarDelegate, $stateParams){
         $ionicNavBarDelegate.showBackButton(false);
 
-        $scope.questions = GameService.getQuestions();
+        $scope.questions = $stateParams.questions;
         $scope.score = 0;
         $scope.currentQuestionIndex = 0;
+        var correctQuestions = new Array();
+        var wrongQuestions = new Array();
 
         var answers = [];
         var choices = [];
@@ -82,18 +75,24 @@ angular.module('app.controllers', [])
         }
 
         $scope.choiceSelected = function(index){
-            if($scope.currentQuestionIndex == ($scope.questions.length-1)){
-                $state.go('gameEnded');
-            }
+           
 
-            var isCorrect = GameService.checkAnswer($scope.currentQuestionIndex, index, Parse.User.current(), $scope);
+            var isCorrect = GameService.checkAnswer($scope.questions, $scope.currentQuestionIndex, index, Parse.User.current(), $scope);
             if(isCorrect){
+                
+                //add to correct questions
+                correctQuestions.push($stateParams.questions[$scope.currentQuestionIndex]);
                 $scope.currentQuestionIndex++;
-                $scope.$apply();
             }else {
+                
+                //add to wrong qeustions
+                wrongQuestions.push($stateParams.questions[$scope.currentQuestionIndex]);
                 $scope.currentQuestionIndex++;
-                $scope.$apply();
             }  
+
+             if($scope.currentQuestionIndex == ($scope.questions.length)){
+                $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions});
+            }
         }
 
         $scope.getSubjectImage = function(subject){
@@ -102,14 +101,14 @@ angular.module('app.controllers', [])
         }
 
         $scope.endGame = function(){
-            GameService.endGame();
+            $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions});
         }
     })
 
-    .controller('GameEndedCtrl', function($scope, GameService){
+    .controller('GameEndedCtrl', function($scope, $stateParams, GameService){
         $scope.score = Parse.User.current().get("score");
-        $scope.wrongQuestions = GameService.getWrongQuestions();
-        $scope.rightQuestions = GameService.getRightQuestions();
+        $scope.wrongQuestions = $stateParams.wrongQuestions;
+        $scope.correctQuestions = $stateParams.correctQuestions;
         var savedQuestions = Parse.User.current().get("savedQuestions");
         $scope.showCorrect = false;
         $scope.showWrong = false;
@@ -159,17 +158,18 @@ angular.module('app.controllers', [])
         }
 
         $scope.saveQuestions = function(){
-            Parse.User.current().set('savedQuestions', savedQuestions);
-            Parse.User.current().save(null, {
+            // Parse.User.current().set("savedQuestions", savedQuestions);
+           
+            Parse.User.current().save({savedQuestions: savedQuestions}, {
                                     success: function(object){
-                                        console.log('user successfully entered game');
+                                        console.log('successfully saved questions');
                                         
                                     },
                                     error:function(err) { 
-                                        console.log('error in entering game');
+                                        console.log(err.message);
                                     }   
                                 });
-            GameService.endGame();
+            
         }
     })
 
@@ -208,7 +208,7 @@ angular.module('app.controllers', [])
                               GameService.checkClassKey($scope.classKey).then(function(res){
                                 GameService.enterGame(game, $scope).then(function(string){
                                     console.log(string);
-                                    $state.go('game');
+                                    $state.go('game', {'questions':game.questions});
                                 })
                               })
                             }
@@ -219,7 +219,7 @@ angular.module('app.controllers', [])
              }else{
                 GameService.enterGame(game, $scope).then(function(string){
                     console.log(string);
-                    $state.go('game');
+                    $state.go('game', {'questions':game.questions});
                 })
              }
         }
@@ -227,10 +227,10 @@ angular.module('app.controllers', [])
 
     .controller('StudyModeCtrl', function($state, $scope, GameService, $ionicLoading){
 
-
         $scope.startGame = function(subject, count){
-            GameService.startStudying($scope, subject, count);
-            $state.go('game');  
+            
+            var studyQ = GameService.startStudying($scope, subject, count);
+            $state.go('game', {'questions':studyQ});
         }
     })
 
