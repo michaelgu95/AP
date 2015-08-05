@@ -51,7 +51,7 @@ angular.module('starter',
                 url: "/game",
                 templateUrl: "templates/game.html",
                 controller: "GameCtrl", 
-                params: {'questions': null}
+                params: {'questions': null, 'game': null}
             })
 
             .state('gameEnded', {

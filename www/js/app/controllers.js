@@ -46,21 +46,24 @@ angular.module('app.controllers', [])
 
         $scope.startGame = function(subject, count, classKey){
             var questions = new Array();
+            var game;
             if(classKey){
                questions = GameService.createSecretGame($scope, subject, count, classKey);
             }else{
-               questions = GameService.createGame($scope, subject, count);
+               var gs = GameService.createGame($scope, subject, count);
+               questions = gs.questions;
+               game = gs.game;
             }
 
-
-            $state.go('game', {'questions': questions});  
+            //pass questions and game to game state
+            $state.go('game', {'questions': questions, 'game': game});  
         }
     })
 
 
     .controller('GameCtrl', function($state, $scope, GameService, $ionicNavBarDelegate, $stateParams){
         $ionicNavBarDelegate.showBackButton(false);
-
+        var gameBeingPlayed = $stateParams.game;
         $scope.questions = $stateParams.questions;
         $scope.score = 0;
         $scope.currentQuestionIndex = 0;
@@ -92,6 +95,7 @@ angular.module('app.controllers', [])
 
              if($scope.currentQuestionIndex == ($scope.questions.length)){
                 $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions});
+                GameService.endGame(gameBeingPlayed);
             }
         }
 
@@ -100,9 +104,6 @@ angular.module('app.controllers', [])
             return imagePath;
         }
 
-        $scope.endGame = function(){
-            $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions});
-        }
     })
 
     .controller('GameEndedCtrl', function($scope, $stateParams, GameService){
@@ -169,7 +170,6 @@ angular.module('app.controllers', [])
                                         console.log(err.message);
                                     }   
                                 });
-            
         }
     })
 
@@ -208,7 +208,7 @@ angular.module('app.controllers', [])
                               GameService.checkClassKey($scope.classKey).then(function(res){
                                 GameService.enterGame(game, $scope).then(function(string){
                                     console.log(string);
-                                    $state.go('game', {'questions':game.questions});
+                                    $state.go('game', {'questions':game.questions, 'game':game.object});
                                 })
                               })
                             }
@@ -219,9 +219,21 @@ angular.module('app.controllers', [])
              }else{
                 GameService.enterGame(game, $scope).then(function(string){
                     console.log(string);
-                    $state.go('game', {'questions':game.questions});
+                    $state.go('game', {'questions':game.questions, 'game':game.object});
                 })
              }
+        }
+
+        $scope.gameLockOccurred = function(){
+             $ionicPopup.show({
+                              title: 'Game Already In Progress',
+                              content: 'Another User has already joined this Game', 
+                              buttons: [
+                                { text: 'OK', type: 'button-positive' }]
+                            }).then(function(res) {
+                              console.log('GameLock!');
+                            });
+            
         }
     })
 

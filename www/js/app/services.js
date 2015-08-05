@@ -31,7 +31,7 @@ angular.module('app.services', [])
 			    	})
 			    	return games;
 			    }
-		 }
+		 } 
 	})
 
     .service('GameService', ['$q', 'ParseConfiguration', '$rootScope',
@@ -82,7 +82,7 @@ angular.module('app.services', [])
 				        		game.save(null,{});
 			                })
 			        });
-			        return questions;
+			        return {questions: questions, game: game};
 			    },
 
 			    createSecretGame: function($scope, subject, count, classKey){
@@ -123,7 +123,7 @@ angular.module('app.services', [])
 				        		game.save(null,{});
 			                })
 			        });
-			        return questions;
+			        return {questions: questions, game: game};
 			    },
 
 			    checkAnswer : function(questions, questionIndex, answerIndex, user, $scope){
@@ -159,24 +159,37 @@ angular.module('app.services', [])
 			   		questions = gameToEnter.questions;
 			   		game = gameToEnter.object;
 
-			   		// $scope.$apply(function(){
-			   			
-			   		// })
-			   		//set questions and game
-			   		game.set("users", users);
-			   		game.increment("gameLock");
-	                game.set("player2", Parse.User.current());
-	                game.set("gameStatus", "in_progress");
+			   		//if there is no classKey, then it is a 2 player game and must follow gameLock rules
+			   		if(gameToEnter.classKey == null){
+			   			if(game.get("gameLock") ==1){
+				   			//set questions and game
+				   			game.set("users", users);
+				   			game.increment("gameLock");
+				   			game.set("player2", Parse.User.current());
+		                	game.set("gameStatus", "in_progress");
+				   		}else{
+					        $scope.gameLockOccurred();
+				   		}
+			   		}else{
+			   			//if there is a classKey then only set game's user array, nothing else
+			   			game.set("users", users);
+			   		}
+
 			   		game.save(null, {
 						   			success: function(object){
 						   				defer.resolve('user successfully entered game');
 						   				
 						   			},
 								  	error:function(err) { 
-									  	console.log("Not successfully saved");
-									  	defer.resolve('error in entering game');
+									  	console.log("error in user entering game");
+									  	defer.reject('error in entering game');
 								   	}	
 						   		});
+			   		
+			   		
+
+
+	           
 			   		//broadcast that a user has joined via Parse Cloud
 					// var currentUserID = Parse.User.current().get("objectId");
 					// var gameID = gameToEnter.id;
@@ -195,13 +208,11 @@ angular.module('app.services', [])
 			   		return defer.promise;
 			   	},
 
-			   	endGame : function(){
+			   	endGame : function(game){
 			   		Parse.User.current().set("score", 0);
 				    Parse.User.current().save();
-				    // var studyQuestions = new Array();
-			  //  		questions = new Array();
-					// selections = new Array();
-					// game = new Game();
+				    game.destroy({});
+				
 			   	},
 
 			   	startStudying : function($scope, subject, count){
@@ -268,19 +279,7 @@ angular.module('app.services', [])
 			   			console.log("No game being played");
 			   		}
 			    	
-			   	},
-
-			   	otherUsersJoined: function(){
-			   		return otherUsersJoined;
-			   	},
-
-				getRightQuestions : function(){
-					return rightQuestions;
-				},
-
-				getWrongQuestions : function(){
-					return wrongQuestions;
-				}
+			   	}
 
 			}
     }]);
