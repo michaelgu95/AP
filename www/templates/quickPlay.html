@@ -1,0 +1,26 @@
+<ion-view title="Quick Play">
+
+	<ion-nav-buttons side="left">
+        <a class="button icon-left ion-chevron-left button-clear" href="#/tab/list"></a>
+    </ion-nav-buttons>
+	<ion-content>
+		<div>
+
+				<!-- Subject -->
+				<label class="item item-input item-select">
+					<div class="input-label">
+						Subject
+					</div>
+					<select ng-model="subject">
+						<option selected>Psychology</option>
+						<option>World History</option>
+					</select>
+				</label>
+
+			<button class="button button-balanced button-full" ng-click="findMatch(subject)">
+				Play
+			</button>
+			
+
+	</ion-content>
+</ion-view>

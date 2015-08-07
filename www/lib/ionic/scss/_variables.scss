@@ -16,7 +16,7 @@ $dark:                            #444 !default;
 // Base
 // -------------------------------
 
-$font-family-sans-serif:          "Helvetica Neue", "Roboto", sans-serif !default;
+$font-family-sans-serif:          "Arial", "Ubuntu", sans-serif !default;
 $font-family-light-sans-serif:    "HelveticaNeue-Light", "Roboto-Light", sans-serif-light !default;
 $font-family-serif:               serif !default;
 $font-family-monospace:           monospace !default;
@@ -35,8 +35,8 @@ $headings-font-family:            $font-family-base !default;
 $headings-font-weight:            500 !default;
 $headings-line-height:            1.2 !default;
 
-$base-background-color:           #fff !default;
-$base-color:                      #000 !default;
+$base-background-color:           #f8f8f8 !default;
+$base-color:                      #f8f8f8 !default;
 
 $link-color:                      $positive !default;
 $link-hover-color:                darken($link-color, 15%) !default;

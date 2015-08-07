@@ -6,7 +6,7 @@ angular.module('app.services', [])
 		 	getGames : function($scope) {
 			    	var Game = Parse.Object.extend("Game");
 			    	var query = new Parse.Query(Game);
-			    	// query.notEqualTo("creator", Parse.User.current());
+			    	query.notEqualTo("creator", Parse.User.current());
 			    	query.find().then(function(results){
 			    		$scope.$apply(function(){
 			    			for(i in results) {
@@ -121,9 +121,47 @@ angular.module('app.services', [])
 			                    game.set("questions", questions);
 			                    game.set("subject", questions[0].subject);
 				        		game.save(null,{});
-			                })
+			                });
 			        });
 			        return {questions: questions, game: game};
+			    },
+
+			    findMatch : function($scope, subject, user){
+			    	user.set("status", "finding");
+			    	user.set("searchingFor", subject);
+			    	user.save();
+
+			    	var query = new Parse.Query(Parse.User);
+			    	query.equalTo("searchingFor", subject);
+
+			    	var currentUserId = user.get("objectId");
+			    	// query.notEqualTo("objectId", currentUserId);
+
+			    	 var opponent;
+			    	query.find().then(function(results){
+			    		if(results.length > 0){
+			    			opponent = results[0];
+			    			
+			    		}
+					});
+
+					opponent.set("status", "playing");
+			    	opponent.save();
+
+					 // broadcast that a user has joined via Parse Cloud
+					// var userId = user.get("objectId");
+			  //  		Parse.Cloud.run('findOpponent', 
+			  //  			{subject:subject, userId: userId},
+					// 	{
+					// 		success : function(status){
+			  //  					console.log(status);
+				 //   			}, 
+				 //   			error : function(error){
+				 //   				console.log(error);
+				 //   			}
+			  //  			}
+			  //  		)
+
 			    },
 
 			    checkAnswer : function(questions, questionIndex, answerIndex, user, $scope){
@@ -190,20 +228,7 @@ angular.module('app.services', [])
 
 
 	           
-			   		//broadcast that a user has joined via Parse Cloud
-					// var currentUserID = Parse.User.current().get("objectId");
-					// var gameID = gameToEnter.id;
-			   // 		Parse.Cloud.run('joinGame', 
-			   // 			{game: gameID, user: currentUserID},
-						// {
-						// 	success : function(match, isTurn){
-			   // 				console.log("Joined Game in Cloud, and it is " + isTurn + "'s turn");
-				  //  			}, 
-				  //  			error : function(error){
-				  //  				console.log("Failed to join Game in Cloud");
-				  //  			}
-			   // 			}
-			   // 		)
+			  
 
 			   		return defer.promise;
 			   	},
@@ -211,6 +236,8 @@ angular.module('app.services', [])
 			   	endGame : function(game){
 			   		Parse.User.current().set("score", 0);
 				    Parse.User.current().save();
+				    var users = game.get("users");
+
 				    game.destroy({});
 				
 			   	},

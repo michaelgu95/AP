@@ -1,11 +1,12 @@
 <ion-view title="Choose Settings">
 
 	<ion-nav-buttons side="left">
-        <a class="button icon-left ion-chevron-left button-clear" href="#/tab/list">Back</a>
+        <a class="button icon-left ion-chevron-left button-clear" href="#/tab/list" ng-click="stopWaiting()"></a>
     </ion-nav-buttons>
 
 	<ion-content>
-		<div ng-hide="waiting">
+
+		<div>
 			
 
 				<!-- Subject -->
@@ -52,10 +53,16 @@
 
 
 			<button class="button button-balanced button-full" ng-click="startGame(subject, count, classKey)">
+				<ion-spinner icon="android" class="spinner-positive" ng-show="waiting"></ion-spinner>
+				
 				Create Game
+				
 			</button>
 
 		</div>
+		
+
+
 
 	</ion-content>
 </ion-view>

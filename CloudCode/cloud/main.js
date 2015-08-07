@@ -3,91 +3,72 @@
 
 var GameManager = require('cloud/game_matching.js');
 
-Parse.Cloud.define("joinRandomGame", function(request, response) {
-  console.log("Incoming join request from " + request.user);
+Parse.Cloud.define("joinGame", function(request, response) {
+  console.log("Incoming join request from " + request.userId);
   
   if (request.user) {
-    GameManager.joinAnonymousGame(request.user, {
-      success: function(match, isTurn) {
-        response.success(match, isTurn);
-      },
-      error: function(error) {
-        console.log(error);
-        response.error("An error has occured.");
+    var user;
+    var query = new Parse.Query(Parse.User);
+    query.equalTo("objectId", request.userId);
+    query.find().then(function(results){
+      user = results[0];
+    })
+    GameManager.joinGame(user, request.subject).then(function(result){
+      if(result !==null){
+        response.success(result);
       }
-    });
-  } else {
-    response.error("Authentication failed");
+    }, function(error){
+        response.error(error);
+    });  
+  }else {
+    response.error("No _User Object in arguments");
   }
 });
 
-Parse.Cloud.define("joinGame", function(request,response) {
-   console.log("Attempting to join game:" + request.params.game);
-     
-   if(request.user){
-      var playerQuery = new Parse.Query(Parse.User);
-      var playerJoining;
-      playerQuery.get(match.user, {
-        success: function(object) {
-          playerJoining = object;
-        },
-        error: function(object, error) {
-          console.error(error);
-        }
-      }); 
-    
-      var matchQuery = new Parse.Query(Match);
-      matchQuery.equalTo("gameStatus", "waiting");
-      matchQuery.equalTo("objectId", match.game);
-      matchQuery.find({
-        success : function(results){
-          if(results.length > 0){
-            _log("found game in database with ID:" + match.game);
-            
+Parse.Cloud.define('findOpponent', function(request, response){
+  //find opponent
+  var opQuery = new Parse.Query('_User');
+  var opponent;
+  opQuery.notEqualTo("objectId", request.userId);
+  opQuery.equalTo("searchingFor", request.subject)
+  opQuery.equalTo("status", "finding");
+  opQuery.first({
+    success : function(object){
+      object.set("status", "playing");
+      object.save();
+    },
+    error: function(error) {
+      alert("Error: " + error.code + " " + error.message);
+    }
+  });
+  //find me
+  var meQuery = new Parse.Query('_User');
+  var me;
+  meQuery.equalTo("objectId", request.userId);
+  meQuery.first({
+    success : function(object){
+      object.set("status", "playing");
+      object.save();
+    },
+    error : function(error) {
+      alert("Error: " + error.code + " " + error.message);
+    }
+  })
 
-                match.increment("gameLock");
-                match.set("player2", playerJoining);
-                match.set("gameStatus", "in_progress");
-
-                match.save(null, {
-                  success: function(updatedMatch) {
-                    console.log("Incremented lock, game data is now: " + JSON.stringify(updatedMatch));
-                    // Check if the join succeeded
-                    // if (updatedMatch.get(_matchLockKey) <= _matchLockKeyMax) {
-                    //   _log("Game lock successful, joining game.", player);
-                      
-                     
-                      
-                    //   match.save(null, {
-                    //     success: function(newMatch) {
-                    //       // Return the game
-                    //       var isTurn = newMatch.get(_matchTurnKey) === _matchTurnKeyPlayer2;
-                    //       console.log("Game joined, and it isTurn is : " + isTurn);
-                    //     },
-                    //     error: function(error) {
-                    //       console.error(error);
-                    //     }
-                    //   });
-
-                    // } else {
-                    //   // If someone else joined game first, give up and create new one
-                    //   console.error("COLLISION");
-                    // }
-                  }, 
-                  error: function(error){
-                    console.error(error);
-                  } 
-                });
+  response.success("successfully found opponent");
+  // if(opponent.get("status") == "finding" 
+  //   && me.get("status") == "finding"){
+  //   me.set("status", "playing");
+  //   me.set("status", "playing");
+  //   //query questions, create game and save users/questions to game
+  //   var Game = Parse.Object.extend("Game");
+  //   var game = new Game();
+  //   var questions = new Array();
+  //   response.success("successfully found match!");
+  // }
 
 
-          }else {
-            console.log("Could not find game");
-          }
-        }, 
-        error: function(error){
-          console.log("Could not find game");
-        }
-      })
-   }
-  
+
+
 })
+

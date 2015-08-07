@@ -1,0 +1,67 @@
+<ion-view title="Feedback">
+
+	<ion-nav-buttons side="right">
+        <a class="button button-clear" href="#/tab/list" ng-click="saveQuestions()">Finish</a>
+    </ion-nav-buttons>
+
+	<ion-content>
+		
+			<div class="list" >
+				<div class="item">
+			    	Score: {{score}}
+			  	</div>
+
+				<div class="item item-divider item-icon-left" ng-click="toggleCorrect()">
+			    	Correct Questions ({{correctQuestions.length}})
+					<i class="icon" ng-class="showCorrect ? 'ion-android-arrow-dropdown' : 'ion-android-arrow-dropright'"></i>
+			  	</div>
+		
+
+				<div ng-repeat="q in correctQuestions" class="item-accordion list card" ng-show="showCorrect">
+		             <a class="item item-icon-right item-text-wrap" ng-click="addQuestion(q)">
+			            <i class="icon ion-bookmark"></i>
+			            {{q.title}}
+			         </a>
+			          
+			         <ion-list>
+				         <div ng-repeat="choice in q.choices">
+				           <div class="item item-icon-left item-text-wrap">
+				               <i class="icon ion-ios-minus-empty" ng-show="isNormal(q,choice)"></i>
+				               <i class="icon ion-checkmark-round" ng-show="isCorrect(q,choice)"></i>
+				               {{choice}}
+				           </div>
+				         </div>
+			         </ion-list>
+	          	</div>
+
+
+
+	          	<div class="item item-divider item-icon-left" ng-click="toggleWrong()">
+			    	Wrong Questions ({{wrongQuestions.length}})
+			    	<i class="icon" ng-class="showWrong ? 'ion-android-arrow-dropdown' : 'ion-android-arrow-dropright'"></i>
+			  	</div>
+		
+
+				<div ng-repeat="q in wrongQuestions" class="list card item-accordion" ng-show="showWrong">
+		             <a class="item item-icon-right item-text-wrap" ng-click="addQuestion(q)">
+			            <i class="icon ion-bookmark"></i>
+			            {{q.title}}
+			             
+			         </a>
+			          
+			         <ion-list>
+				         <div ng-repeat="choice in q.choices">
+				           <div class="item item-icon-left item-text-wrap">
+				               <i class="icon ion-ios-minus-empty" ng-show="isNormal(q,choice)"></i>
+				               <i class="icon ion-close-round" ng-show="isWrong(q,choice)"></i>
+				               <i class="icon ion-checkmark-round" ng-show="isCorrect(q,choice)"></i>
+				               {{choice}}
+				           </div>
+				         </div>
+			         </ion-list>
+	          	</div>
+					
+			</div>
+	
+	</ion-content>
+</ion-view>

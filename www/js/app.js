@@ -67,6 +67,12 @@ angular.module('starter',
                 controller: "GameRoomCtrl"
             })
 
+            .state('quickPlay', {
+                url:"/qickPlay",
+                templateUrl: "templates/quickPlay.html",
+                controller: "QuickPlayCtrl"
+            })
+
             .state('createGame', {
                 url:"/createGame", 
                 templateUrl: "templates/createGame.html", 

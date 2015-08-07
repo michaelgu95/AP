@@ -18,7 +18,7 @@
 		
 
 				<div ng-repeat="q in correctQuestions" class="item-accordion list card" ng-show="showCorrect">
-		             <a class="item item-icon-right item-text-wrap" ng-click="addQuestion(q)">
+		             <a class="item item-icon-right item-text-wrap item-stable" ng-click="addQuestion(q)">
 			            <i class="icon ion-bookmark"></i>
 			            {{q.title}}
 			         </a>
@@ -43,7 +43,7 @@
 		
 
 				<div ng-repeat="q in wrongQuestions" class="list card item-accordion" ng-show="showWrong">
-		             <a class="item item-icon-right item-text-wrap" ng-click="addQuestion(q)">
+		             <a class="item item-icon-right item-text-wrap item-stable" ng-click="addQuestion(q)">
 			            <i class="icon ion-bookmark"></i>
 			            {{q.title}}
 			             

@@ -1,0 +1,39 @@
+<ion-view title="Choose Settings">
+
+	<ion-nav-buttons side="left">
+        <a class="button icon-left ion-chevron-left button-clear" href="#/tab/list"></a>
+    </ion-nav-buttons>
+
+	<ion-content>
+		<div>
+
+				<!-- Subject -->
+				<label class="item item-input item-select">
+					<div class="input-label">
+						Subject
+					</div>
+					<select ng-model="subject">
+						<option selected>Psychology</option>
+						<option>World History</option>
+					</select>
+				</label>
+
+
+				<!-- Question Count -->
+				<div class="item range range-positive">
+					<div class="input-label">
+						Question Count
+					</div>
+				
+				    <input type="range" name="volume" min="0" max="30" value="10" ng-model="count">
+				   {{count}}
+			  	</div>
+
+			<button class="button button-balanced button-full" ng-click="startGame(subject, count)">
+				Start
+			</button>
+
+		</div>
+
+	</ion-content>
+</ion-view>

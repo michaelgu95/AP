@@ -15,6 +15,11 @@ angular.module('app.controllers', [])
         function ($state, $scope, UserService, GameService) {
 
             $scope.questions = new Array();
+
+            $scope.quickPlay = function() {
+                $state.go('quickPlay');
+            };
+
             $scope.createGame = function(){
                 $state.go('createGame');
                
@@ -40,23 +45,48 @@ angular.module('app.controllers', [])
             };
         })
 
-    .controller('CreateGameCtrl', function($state, $scope, GameService, $ionicLoading){
+    .controller('QuickPlayCtrl', function($state, $scope, GameService, $ionicLoading){
+        var Game = Parse.Object.extend("Game");
+        $scope.game = new Game();
+        $scope.findMatch = function(subject){
+            var user = Parse.User.current();
+            GameService.findMatch($scope, subject, user);
+            // .then(function(){
 
+            //     // $state.go('game', {'questions': })
+            // });
+        }
+
+
+    })
+
+    .controller('CreateGameCtrl', function($state, $scope, GameService, $ionicLoading){
+        $scope.waiting = false;
         var classKey = $scope.classKey;
 
         $scope.startGame = function(subject, count, classKey){
             var questions = new Array();
             var game;
             if(classKey){
-               questions = GameService.createSecretGame($scope, subject, count, classKey);
+               var gs = GameService.createSecretGame($scope, subject, count, classKey);
+               questions = gs.questions;
+               game = gs.game;
             }else{
                var gs = GameService.createGame($scope, subject, count);
                questions = gs.questions;
                game = gs.game;
+
             }
+            $scope.waiting = true;
 
             //pass questions and game to game state
-            $state.go('game', {'questions': questions, 'game': game});  
+            // $state.go('game', {'questions': questions, 'game': game});  
+            
+
+        }
+
+        $scope.stopWaiting = function(){
+            $scope.waiting = false;
         }
     })
 
@@ -176,6 +206,12 @@ angular.module('app.controllers', [])
     .controller('GameRoomCtrl', function($scope, $state, GameService, GameRoomService, UserService, $ionicPopup, $timeout){
         $scope.games = GameRoomService.getGames($scope);
 
+        $scope.findGames = function(){
+            $scope.games = GameRoomService.getGames($scope);
+            $scope.$broadcast('scroll.refreshComplete');
+            $scope.$apply();
+        }
+
         var user = UserService.currentUser();
 
         $scope.getGameCreator = function(game){
@@ -195,8 +231,8 @@ angular.module('app.controllers', [])
             if(game.classKey != null){
 
                     var myPopup = $ionicPopup.show({
-                        template: '<input type="password" ng-model="classKey">',
-                        title: 'Enter Class Key',
+                        template: '<style>.p{ color:black }</style><input type="password" ng-model="classKey">',
+                        title: '<p>Enter Class Key</p>',
                         subTitle: 'See Your Instructor',
                         scope: $scope,
                         buttons: [

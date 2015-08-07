@@ -1,0 +1,23 @@
+<ion-view title="Saved Questions">
+    <ion-content class="padding">
+        <div class="list card" ng-repeat="q in questions">
+            
+          <div class="item item-avatar item-text-wrap">
+          	<img ng-src="{{getSubjectImage(q.subject)}}">
+            <h2>{{q.subject}}</h2>
+            {{q.title}}
+          </div>
+          
+          <ion-list>
+          <div ng-repeat="choice in q.choices">
+            <a ng-click="choiceSelected($index)" class="item item-icon-left item-text-wrap">
+				<i class="icon ion-ios-minus-empty" ng-show="isNormal(q,choice)"></i>
+				<i class="icon ion-checkmark-round" ng-show="isCorrect(q,choice)"></i>
+                {{choice}}
+            </a>
+          </div>
+          </ion-list>
+
+        </div>
+    </ion-content>
+</ion-view>

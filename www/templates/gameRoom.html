@@ -5,16 +5,18 @@
     </ion-nav-buttons>
 
 	<ion-content>
+			<ion-refresher pulling-text="Finding Games..." on-refresh="findGames()">
+    		</ion-refresher>
 		
 			<div class="list card" >
-				<div class="item item-divider">
+				<div class="item item-divider item-positive">
 			    	Games
 			  	</div>
 		
 
-				<div class="item item-avatar" ng-repeat="game in games" ng-click="enterGame(game)">
+				<div class="item item-avatar item-stable" ng-repeat="game in games" ng-click="enterGame(game)">
 		            <img ng-src="{{getSubjectImage(game.subject)}}">
-		            <h2>{{game.subject}} - {{getQuestionCount(game)}} Questions</h2>
+		            <p>{{game.subject}} - {{getQuestionCount(game)}} Questions</p>
 		            <p>Created by {{getGameCreator(game)}}</p>
 	          	</div>
 					

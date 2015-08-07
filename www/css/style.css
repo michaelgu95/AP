@@ -1,15 +1,24 @@
-.item-icon-left ion-spinner {
+/*ion-spinner {
   float: left;
   margin-left: -3.2em;
   margin-right: 1em;
   margin-top: -0.2em;
- }
+ }*/
 
-.spinner svg {
-  width: 28px;
-  height: 28px;
-  stroke: #999;
-  fill: #999;
+/*div.spinner {
+  margin: auto;
+  position: absolute;
+  height: 85px;
 }
+.spinner svg {
+  width: 14% !important;
+  height: 20px !important;
+  vertical-align: center;
+  position:absolute;
+}*/
 
-
+/*@font-face {
+  font-family: 'Helvetica';
+  font-style: normal;
+  font-weight: 200;
+}*/
