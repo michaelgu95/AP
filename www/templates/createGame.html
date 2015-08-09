@@ -7,8 +7,6 @@
 	<ion-content>
 
 		<div>
-			
-
 				<!-- Subject -->
 				<label class="item item-input item-select">
 					<div class="input-label">
@@ -51,12 +49,16 @@
 					<input type="text" ng-model="classKey">
 				</label>
 
-
 			<button class="button button-balanced button-full" ng-click="startGame(subject, count, classKey)">
-				<ion-spinner icon="android" class="spinner-positive" ng-show="waiting"></ion-spinner>
-				
-				Create Game
-				
+				<div ng-hide="waiting">
+					Create Game
+				</div>
+
+				<div ng-show="waiting">
+					Initializing
+					<br>
+					<ion-spinner icon="android" class="spinner-positive" ng-hide="finished"></ion-spinner>
+				</div>
 			</button>
 
 		</div>

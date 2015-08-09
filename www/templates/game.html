@@ -1,7 +1,7 @@
 <ion-view title="Game has Started">
 
   <ion-nav-buttons side="right">
-        <a class="button icon-left ion-flag button-stable" href="#/tab/list" ng-click="endGame()">End</a>
+        <a class="button icon-left ion-flag button-stable" ng-click="endGame()">End</a>
     </ion-nav-buttons>
 
   
@@ -23,12 +23,14 @@
           <ion-list>
           <div ng-repeat="choice in q.choices">
             <a ng-click="choiceSelected($index)" class="item item-icon-left item-text-wrap item-stable">
-                <i class="icon ion-ios-play-outline"></i>
+                <i ng-class="isSelectedIndex($index)? 'ion-android-done-all': 'ion-android-arrow-dropright'"></i>
                 {{choice}}
             </a>
           </div>
           </ion-list>
 
         </div>
+        <a ng-click="madeSelection && enter()" ng-class="madeSelection? 'button-positive': 'button-stable'" class="button button-block icon-right ion-android-exit">Submit</a>
+
     </ion-content>
 </ion-view>

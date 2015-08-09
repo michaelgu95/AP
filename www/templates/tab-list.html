@@ -4,7 +4,7 @@
             Menu
         </button>
     </ion-nav-buttons>
-
+    
     <ion-nav-buttons side="right">
         <button class="button" ng-click="doLogoutAction()">
             Logout
@@ -27,5 +27,24 @@
         <button class="button button-block button-stable" ng-click="study()">
             Study 
         </button>
+
+        <div class="list card" >
+            
+          <div class="item item-icon-left item-balanced">
+            <i class="icon ion-loop"></i>
+            <h2>Games in Progress</h2>
+          </div>
+          
+          <ion-list>
+          
+            <a ng-repeat="game in games" ng-click="enterGame(game)" class="item item-icon-right item-text-wrap item-stable item-avatar">
+                <img ng-src="{{getSubjectImage(game.subject)}}">
+                <i class="icon ion-ios-play-outline"></i>
+                {{game.subject}}
+                {{game.creator}}
+            </a>
+          </ion-list>
+
+        </div>
     </ion-content>
 </ion-view>

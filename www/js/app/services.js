@@ -1,9 +1,19 @@
 angular.module('app.services', [])
+  .factory('socket',function(socketFactory){
+        //Create socket and connect to http://chat.socket.io 
+         var myIoSocket = io.connect('http://chat.socket.io');
+
+          mySocket = socketFactory({
+            ioSocket: myIoSocket
+          });
+
+        return mySocket;
+    })
 
 	.service('GameRoomService', function(){
-		var games = new Array();
 		 return {
 		 	getGames : function($scope) {
+		 			var games = new Array();
 			    	var Game = Parse.Object.extend("Game");
 			    	var query = new Parse.Query(Game);
 			    	query.notEqualTo("creator", Parse.User.current());
@@ -82,7 +92,7 @@ angular.module('app.services', [])
 				        		game.save(null,{});
 			                })
 			        });
-			        return {questions: questions, game: game};
+			        return {questions: questions, game: game, gameId: game.get("objectId")};
 			    },
 
 			    createSecretGame: function($scope, subject, count, classKey){
@@ -123,7 +133,7 @@ angular.module('app.services', [])
 				        		game.save(null,{});
 			                });
 			        });
-			        return {questions: questions, game: game};
+			        return {questions: questions, game: game, gameId: game.get("objectId")};
 			    },
 
 			    findMatch : function($scope, subject, user){
@@ -224,11 +234,6 @@ angular.module('app.services', [])
 								   	}	
 						   		});
 			   		
-			   		
-
-
-	           
-			  
 
 			   		return defer.promise;
 			   	},
@@ -276,6 +281,30 @@ angular.module('app.services', [])
 
 			        return studyQ;
 
+			   	},
+
+			   	convertParseGames : function($scope, rawGames){
+			   		var games = new Array();
+	                	for(i in rawGames) {
+	                                var obj = rawGames[i];
+	                                var users = obj.get("users");
+	                                var subject = obj.get("subject");
+	                                var id = obj.get("objectId");
+	                                var questions = obj.get("questions");
+	                                var classKey = obj.get("classKey");
+	                                var creator = obj.get("creator");
+	                                games.push({
+	                                    users: users,
+	                                    subject: subject, 
+	                                    id: id, 
+	                                    questions : questions, 
+	                                    object: obj, 
+	                                    classKey: classKey, 
+	                                    creator : creator
+	                                })
+	                            }
+            		
+					return games;
 			   	},
 
 			   	checkClassKey : function (classKey){

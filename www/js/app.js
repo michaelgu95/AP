@@ -9,7 +9,8 @@ angular.module('starter',
         'app.controllers',
         'app.services',
         'user.controllers',
-        'user.services'
+        'user.services',
+        'btford.socket-io'
     ]
 )
 /**
@@ -51,7 +52,7 @@ angular.module('starter',
                 url: "/game",
                 templateUrl: "templates/game.html",
                 controller: "GameCtrl", 
-                params: {'questions': null, 'game': null}
+                params: {'questions': null, 'game': null, 'studying':null}
             })
 
             .state('gameEnded', {
@@ -106,7 +107,8 @@ angular.module('starter',
                 views: {
                     'tab-list': {
                         templateUrl: 'templates/tab-list.html',
-                        controller: 'HomeCtrl'
+                        controller: 'HomeCtrl',
+                        params: {'games': null}
                     }
                 }
             })
