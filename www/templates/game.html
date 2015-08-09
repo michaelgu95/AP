@@ -23,14 +23,15 @@
           <ion-list>
           <div ng-repeat="choice in q.choices">
             <a ng-click="choiceSelected($index)" class="item item-icon-left item-text-wrap item-stable">
-                <i ng-class="isSelectedIndex($index)? 'ion-android-done-all': 'ion-android-arrow-dropright'"></i>
+                <i ng-class="isSelectedIndex($index)? 'ion-android-checkmark-circle': 'ion-android-radio-button-off'"></i>
+                &nbsp;
                 {{choice}}
             </a>
           </div>
           </ion-list>
 
         </div>
-        <a ng-click="madeSelection && enter()" ng-class="madeSelection? 'button-positive': 'button-stable'" class="button button-block icon-right ion-android-exit">Submit</a>
+        <a ng-click="madeSelection && enter()" ng-class="madeSelection? 'button-positive icon-right ion-android-exit': 'button-stable'" class="button button-block ">Submit</a>
 
     </ion-content>
 </ion-view>

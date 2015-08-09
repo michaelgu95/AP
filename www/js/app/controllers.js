@@ -183,7 +183,7 @@ angular.module('app.controllers', [])
         }
 
         $scope.isSelectedIndex = function(index){
-            return index == selectedIndex;
+            return index == selectedIndex && $scope.madeSelection;
         }
 
         $scope.endGame = function(){
