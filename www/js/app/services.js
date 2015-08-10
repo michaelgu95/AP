@@ -1,7 +1,7 @@
 angular.module('app.services', [])
   .factory('socket',function(socketFactory){
         //Create socket and connect to http://chat.socket.io 
-         var myIoSocket = io.connect('http://chat.socket.io');
+         var myIoSocket = io.connect('http://localhost:3000');
 
           mySocket = socketFactory({
             ioSocket: myIoSocket
@@ -44,8 +44,8 @@ angular.module('app.services', [])
 		 } 
 	})
 
-    .service('GameService', ['$q', 'ParseConfiguration', '$rootScope',
-        function ($q, ParseConfiguration, $rootScope) {
+    .service('GameService', ['$q', 'ParseConfiguration', '$rootScope', 'socket', 
+        function ($q, ParseConfiguration, $rootScope, socket) {
 			var selections = new Array();
         	var Game = Parse.Object.extend("Game");
 			var game = new Game();
@@ -196,14 +196,15 @@ angular.module('app.services', [])
 
 			   	enterGame : function(gameToEnter, $scope){
 			   		var defer = $q.defer();
+			   		var user = Parse.User.current();
 
 			   		//set user's score as 0 
-			   		Parse.User.current().set("score", 0);
-				    Parse.User.current().save();
+			   		user.set("score", 0);
+				    user.save();
 
 				    //add users to array
 			   		var users = gameToEnter.users;
-			   		users.push(Parse.User.current().get("username"));
+			   		users.push(user.get("username"));
 			   		questions = gameToEnter.questions;
 			   		game = gameToEnter.object;
 
@@ -222,11 +223,15 @@ angular.module('app.services', [])
 			   			//if there is a classKey then only set game's user array, nothing else
 			   			game.set("users", users);
 			   		}
+			   		var creator = gameToEnter.creator;
+			   		var creatorEmail = creator.get("username");
+			   		var userEmail = user.get("username");
+
 
 			   		game.save(null, {
 						   			success: function(object){
 						   				defer.resolve('user successfully entered game');
-						   				
+						   				socket.emit('joinGame', {creator:creatorEmail, game:game, user:userEmail});
 						   			},
 								  	error:function(err) { 
 									  	console.log("error in user entering game");
@@ -249,6 +254,8 @@ angular.module('app.services', [])
 
 			   	startStudying : function($scope, subject, count){
 			        // game = new Game();
+			        var deferred = $q.defer();
+
         			var subject = subject;
 				    Parse.User.current().set("score", 0);
 				    Parse.User.current().save();
@@ -258,7 +265,7 @@ angular.module('app.services', [])
 			        query.equalTo("Subject", subject);
 			        query.limit(count);
 
-			        var studyQ = new Array();
+			        var questions = new Array();
 
 			        query.find().then(function(results) {
 			                $scope.$apply(function(){
@@ -268,18 +275,18 @@ angular.module('app.services', [])
 			                        var choices = obj.get("Answers");
 			                        var subject = obj.get("Subject");
 			                        var answer = obj.get("Answer");
-			                        studyQ.push({
+			                        questions.push({
 			                            title:title,
 			                            choices:choices,
 			                            subject:subject,
 			                            answer: answer
 			                        });
 			                    }
-			                   
 			                })
-			        });
+			        	deferred.resolve(questions);
 
-			        return studyQ;
+			        });
+			        return deferred.promise;
 
 			   	},
 

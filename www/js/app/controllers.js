@@ -12,8 +12,9 @@ angular.module('app.controllers', [])
 
         }])
     .controller('HomeCtrl',   
-        function ($state, $scope, UserService, GameService) {
+        function ($state, $scope, UserService, GameService, socket) {
             $scope.games = new Array(); 
+
         //     var rawGames = Parse.User.current().get("currentGames");
         //     var Game = Parse.Object.extend("Game");
         //     var gameQuery = new Parse.Query(Game);
@@ -44,12 +45,12 @@ angular.module('app.controllers', [])
         //         })
         //     })
         // }
-            
-            
-            
-            
-
-
+        $scope.messages = new Array();
+        socket.on("userJoined", function(data) {
+            var message = data.msg + " with username: " + data.user;
+            alert(message);
+            $scope.messages.push(message);
+        })
 
             $scope.quickPlay = function() {
                 $state.go('quickPlay');
@@ -95,7 +96,7 @@ angular.module('app.controllers', [])
 
     })
 
-    .controller('CreateGameCtrl', function($state, $scope, GameService, $ionicLoading){
+    .controller('CreateGameCtrl', function($state, $scope, GameService, $ionicLoading, socket){
         $scope.waiting = false;
         $scope.finished = false;
         var classKey = $scope.classKey;
@@ -117,6 +118,8 @@ angular.module('app.controllers', [])
                Parse.User.current().addUnique("currentGames", gs.gameId);
                Parse.User.current().save();
             }
+            var username = Parse.User.current().get("username");
+            socket.emit('join', {email: username});
             
             // $scope.finished = true;
             // $state.go('tab.list');
@@ -130,7 +133,7 @@ angular.module('app.controllers', [])
     })
 
 
-    .controller('GameCtrl', function($state, $scope, GameService, $ionicNavBarDelegate, $stateParams, $ionicPopup){
+    .controller('GameCtrl', function($state, $scope, GameService, $ionicNavBarDelegate, $stateParams, $ionicPopup, $ionicScrollDelegate){
         $ionicNavBarDelegate.showBackButton(false);
         $scope.questions = $stateParams.questions;
         $scope.score = 0;
@@ -142,7 +145,6 @@ angular.module('app.controllers', [])
         var gameBeingPlayed = $stateParams.game;
         var selectedIndex;
 
-
         var answers = [];
         var choices = [];
         for(i in $scope.questions){
@@ -153,6 +155,7 @@ angular.module('app.controllers', [])
         $scope.choiceSelected = function(index){
            selectedIndex = index;
            $scope.madeSelection = true;
+           $ionicScrollDelegate.scrollBottom(true);
         }
 
         $scope.enter = function(){
@@ -347,11 +350,14 @@ angular.module('app.controllers', [])
     })
 
     .controller('StudyModeCtrl', function($state, $scope, GameService, $ionicLoading){
-
+        $scope.waiting = false;
         $scope.startGame = function(subject, count){
-            
-            var studyQ = GameService.startStudying($scope, subject, count);
-            $state.go('game', {'questions':studyQ, 'studying': true});
+            $scope.waiting = true;
+            GameService.startStudying($scope, subject, count).then(function(questions){
+                 $state.go('game', {'questions':questions, 'studying': true});
+            });
+
+           
         }
     })
 

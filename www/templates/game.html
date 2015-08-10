@@ -1,4 +1,4 @@
-<ion-view title="Game has Started">
+<ion-view title="Playing">
 
   <ion-nav-buttons side="right">
         <a class="button icon-left ion-flag button-stable" ng-click="endGame()">End</a>
@@ -23,8 +23,7 @@
           <ion-list>
           <div ng-repeat="choice in q.choices">
             <a ng-click="choiceSelected($index)" class="item item-icon-left item-text-wrap item-stable">
-                <i ng-class="isSelectedIndex($index)? 'ion-android-checkmark-circle': 'ion-android-radio-button-off'"></i>
-                &nbsp;
+                <i ng-class="isSelectedIndex($index)? 'icon ion-android-checkmark-circle': 'icon ion-android-radio-button-off'"></i>
                 {{choice}}
             </a>
           </div>
