@@ -90,6 +90,7 @@ angular.module('app.services', [])
 			                    game.set("questions", questions);
 			                    game.set("subject", questions[0].subject);
 				        		game.save(null,{});
+				        		$scope.finished = true;
 			                })
 			        });
 			        return {questions: questions, game: game, gameId: game.get("objectId")};
@@ -131,6 +132,7 @@ angular.module('app.services', [])
 			                    game.set("questions", questions);
 			                    game.set("subject", questions[0].subject);
 				        		game.save(null,{});
+				        		$scope.finished = true;
 			                });
 			        });
 			        return {questions: questions, game: game, gameId: game.get("objectId")};
@@ -231,7 +233,7 @@ angular.module('app.services', [])
 			   		game.save(null, {
 						   			success: function(object){
 						   				defer.resolve('user successfully entered game');
-						   				socket.emit('joinGame', {creator:creatorEmail, game:game, user:userEmail});
+						   				socket.emit('joinGame', {email:creatorEmail, game:game, user:userEmail});
 						   			},
 								  	error:function(err) { 
 									  	console.log("error in user entering game");
@@ -244,10 +246,7 @@ angular.module('app.services', [])
 			   	},
 
 			   	endGame : function(game){
-			   		Parse.User.current().set("score", 0);
-				    Parse.User.current().save();
-				    var users = game.get("users");
-
+			   		
 				    game.destroy({});
 				
 			   	},

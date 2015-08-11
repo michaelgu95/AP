@@ -52,14 +52,16 @@ angular.module('starter',
                 url: "/game",
                 templateUrl: "templates/game.html",
                 controller: "GameCtrl", 
-                params: {'questions': null, 'game': null, 'studying':null}
+                params: {'questions': null, 'game': null, 'studying':null},
+                cache:false
             })
 
             .state('gameEnded', {
                 url: "/gameEnded",
                 templateUrl: "templates/gameEnded.html",
                 controller: "GameEndedCtrl",
-                params: {'correctQuestions': null, 'wrongQuestions' : null}
+                params: {'correctQuestions': null, 'wrongQuestions' : null},
+                cache:false
             })
 
             .state('gameRoom', {
@@ -71,19 +73,22 @@ angular.module('starter',
             .state('quickPlay', {
                 url:"/qickPlay",
                 templateUrl: "templates/quickPlay.html",
-                controller: "QuickPlayCtrl"
+                controller: "QuickPlayCtrl",
+                cache:false
             })
 
             .state('createGame', {
                 url:"/createGame", 
                 templateUrl: "templates/createGame.html", 
-                controller: "CreateGameCtrl"
+                controller: "CreateGameCtrl",
+                cache:false
             })
 
             .state('studyMode', {
                 url:"/studyMode", 
                 templateUrl: "templates/studyMode.html", 
-                controller: "StudyModeCtrl"
+                controller: "StudyModeCtrl",
+                cache:false
             })
 
             // setup an abstract state for the tabs directive, check for a user

@@ -53,20 +53,20 @@ angular.module('app.controllers', [])
         })
 
             $scope.quickPlay = function() {
-                $state.go('quickPlay');
+                $state.go('quickPlay', {}, {reload: true});
             };
 
             $scope.createGame = function(){
-                $state.go('createGame');
+                $state.go('createGame', {}, {reload: true});
                
             }
 
             $scope.findGame = function(){
-                $state.go('gameRoom');
+                $state.go('gameRoom', {}, {reload: true});
             }
 
             $scope.study = function(){
-                $state.go('studyMode');
+                $state.go('studyMode', {}, {reload: true});
             }
 
             $scope.doLogoutAction = function () {
@@ -81,18 +81,32 @@ angular.module('app.controllers', [])
             };
         })
 
-    .controller('QuickPlayCtrl', function($state, $scope, GameService, $ionicLoading){
-        var Game = Parse.Object.extend("Game");
-        $scope.game = new Game();
+    .controller('QuickPlayCtrl', function($state, $scope, GameService, $ionicPopup, socket){
+       
+        var user = Parse.User.current();
+        var email = user.get("username");
         $scope.findMatch = function(subject){
-            var user = Parse.User.current();
-            GameService.findMatch($scope, subject, user);
-            // .then(function(){
-
-            //     // $state.go('game', {'questions': })
-            // });
+            socket.emit('findOpponent', {user:user, email:email, subject:subject});
         }
+        
+         socket.once('opponentFound', function(data){
+                // alert(data.msg + " with username: " + data.opponentEmail);
 
+                var gs = GameService.createGame($scope, data.subject, 5);
+                socket.emit('leaveRoom', {email:email})
+                $ionicPopup.show({
+                    title: data.msg,
+                    subTitle: 'Username: ' + data.opponentEmail, 
+                    buttons: [
+                        { text: 'Start Game', 
+                          type: 'button-positive',
+                          onTap: function(e){
+                            $state.go('game', {'questions': gs.questions, 'game':gs.game});
+                          } 
+                        }
+                    ]
+                })
+        });
 
     })
 
@@ -213,7 +227,7 @@ angular.module('app.controllers', [])
 
     })
 
-    .controller('GameEndedCtrl', function($scope, $stateParams, GameService){
+    .controller('GameEndedCtrl', function($scope, $state, $stateParams, GameService){
         $scope.score = Parse.User.current().get("score");
         $scope.wrongQuestions = $stateParams.wrongQuestions;
         $scope.correctQuestions = $stateParams.correctQuestions;
@@ -277,6 +291,9 @@ angular.module('app.controllers', [])
                                         console.log(err.message);
                                     }   
                                 });
+            Parse.User.current().set("score", 0);
+            Parse.User.current().save();
+            $state.go('tab.list', {}, {reload: true});
         }
     })
 
@@ -354,6 +371,7 @@ angular.module('app.controllers', [])
         $scope.startGame = function(subject, count){
             $scope.waiting = true;
             GameService.startStudying($scope, subject, count).then(function(questions){
+                 $scope.waiting = false;
                  $state.go('game', {'questions':questions, 'studying': true});
             });
 
