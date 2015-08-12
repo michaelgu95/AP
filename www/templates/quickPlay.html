@@ -18,8 +18,19 @@
 				</label>
 
 			<button class="button button-balanced button-full" ng-click="findMatch(subject)">
-				Play
+				<div ng-hide="waiting">
+					Play
+				</div>
+
+				<div ng-show="waiting">
+					Finding Opponent
+					<br>
+					<ion-spinner icon="android" class="spinner-positive" ng-hide="finished"></ion-spinner>
+					<i class="icon ion-checkmark-circled" ng-show="finished"></i>
+				</div>
 			</button>
+
+
 			
 
 	</ion-content>

@@ -82,16 +82,18 @@ angular.module('app.controllers', [])
         })
 
     .controller('QuickPlayCtrl', function($state, $scope, GameService, $ionicPopup, socket){
-       
         var user = Parse.User.current();
         var email = user.get("username");
+        $scope.waiting = false;
+        $scope.finished = false;
+
         $scope.findMatch = function(subject){
+            $scope.waiting = true;
             socket.emit('findOpponent', {user:user, email:email, subject:subject});
         }
         
          socket.once('opponentFound', function(data){
-                // alert(data.msg + " with username: " + data.opponentEmail);
-
+                $scope.finished = true;
                 var gs = GameService.createGame($scope, data.subject, 5);
                 socket.emit('leaveRoom', {email:email})
                 $ionicPopup.show({
@@ -147,7 +149,7 @@ angular.module('app.controllers', [])
     })
 
 
-    .controller('GameCtrl', function($state, $scope, GameService, $ionicNavBarDelegate, $stateParams, $ionicPopup, $ionicScrollDelegate){
+    .controller('GameCtrl', function($state, $scope, GameService, $ionicNavBarDelegate, $stateParams, $ionicPopup, $ionicScrollDelegate, $timeout){
         $ionicNavBarDelegate.showBackButton(false);
         $scope.questions = $stateParams.questions;
         $scope.score = 0;
@@ -156,6 +158,7 @@ angular.module('app.controllers', [])
         var studying = $stateParams.studying;
         var correctQuestions = new Array();
         var wrongQuestions = new Array();
+        var unansweredQuestions = new Array();
         var gameBeingPlayed = $stateParams.game;
         var selectedIndex;
 
@@ -169,13 +172,12 @@ angular.module('app.controllers', [])
         $scope.choiceSelected = function(index){
            selectedIndex = index;
            $scope.madeSelection = true;
-           $ionicScrollDelegate.scrollBottom(true);
         }
 
         $scope.enter = function(){
             var isCorrect = GameService.checkAnswer($scope.questions, $scope.currentQuestionIndex, selectedIndex, Parse.User.current(), $scope);
+            // $scope.resetTimer();
             if(isCorrect){
-                
                 //add to correct questions
                 correctQuestions.push($stateParams.questions[$scope.currentQuestionIndex]);
                 $scope.currentQuestionIndex++;
@@ -224,6 +226,26 @@ angular.module('app.controllers', [])
                 })
             }
         }
+
+        // $scope.counter = 30;
+        // $scope.onTimeout = function(){
+        //     $scope.counter--;
+        //     if ($scope.counter > 0) {
+        //         mytimeout = $timeout($scope.onTimeout,1000);
+        //     }
+        //     else {
+        //         unansweredQuestions.push($stateParams.questions[$scope.currentQuestionIndex]);
+        //         $scope.currentQuestionIndex++;
+        //         $scope.madeSelection = false;
+        //         $scope.resetTimer();
+        //     }
+        // }
+        // var mytimeout = $timeout($scope.onTimeout,1000);
+    
+        // $scope.resetTimer = function(){
+        //     $scope.counter = 30;
+        //     mytimeout = $timeout($scope.onTimeout,1000);
+        // }
 
     })
 
@@ -366,7 +388,7 @@ angular.module('app.controllers', [])
         }
     })
 
-    .controller('StudyModeCtrl', function($state, $scope, GameService, $ionicLoading){
+    .controller('StudyModeCtrl', function($state, $scope, GameService){
         $scope.waiting = false;
         $scope.startGame = function(subject, count){
             $scope.waiting = true;
