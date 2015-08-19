@@ -151,7 +151,7 @@ angular.module('app.controllers', [])
     })
 
 
-    .controller('GameCtrl', function($state, $scope, GameService, $ionicNavBarDelegate, $stateParams, $ionicPopup, $ionicScrollDelegate, $timeout, socket){
+    .controller('GameCtrl', function($state, $scope, $rootScope, GameService, $ionicNavBarDelegate, $stateParams, $ionicPopup, $ionicScrollDelegate, $interval, socket){
         $ionicNavBarDelegate.showBackButton(false);
         $scope.questions = $stateParams.questions;
         $scope.score = 0;
@@ -182,7 +182,7 @@ angular.module('app.controllers', [])
         $scope.enter = function(){
             var isCorrect = GameService.checkAnswer($scope.questions, $scope.currentQuestionIndex, selectedIndex, Parse.User.current(), $scope);
             // $ionicScrollDelegate.$getByHandle('small').scrollTop();
-            // $scope.resetTimer();
+            $scope.resetTimer();
             if(isCorrect){
                 //add to correct questions
                 correctQuestions.push($stateParams.questions[$scope.currentQuestionIndex]);
@@ -195,8 +195,13 @@ angular.module('app.controllers', [])
                 $scope.currentQuestionIndex++;
                 $scope.madeSelection = false;
             }  
+            if($scope.currentQuestionIndex == ($scope.questions.length)){
+                $scope.checkIfLastQuestion();
+            }   
+        }
 
-             if($scope.currentQuestionIndex == ($scope.questions.length)){
+        $scope.checkIfLastQuestion = function(){
+            
                 if($stateParams.mode == "quickPlay"){
                     // $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'opponent':$stateParams.opponent});
                     socket.emit('finishedGame', {userEmail: Parse.User.current().get("username"), user: Parse.User.current(), score: $scope.score, correctQuestions: correctQuestions, wrongQuestions:wrongQuestions, opponentEmail:$stateParams.opponentEmail, opponent:$stateParams.opponent});
@@ -217,7 +222,7 @@ angular.module('app.controllers', [])
                 }
                 
                 GameService.endGame(gameBeingPlayed);
-            }
+            
         }
 
         $scope.getSubjectImage = function(subject){
@@ -242,7 +247,7 @@ angular.module('app.controllers', [])
                         { text: 'OK', 
                           type: 'button-positive',
                           onTap: function(e){
-                            socket.emit('quitMatch', {opponentEmail:$stateParams.opponentEmail});
+                            socket.emit('quitMatch', {userEmail: Parse.User.current().get("username"), opponentEmail:$stateParams.opponentEmail});
                             $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'opponent':$stateParams.opponent});
                             GameService.endGame(gameBeingPlayed);
                           } 
@@ -267,25 +272,32 @@ angular.module('app.controllers', [])
                 })
         })
 
-        // $scope.counter = 30;
-        // $scope.onTimeout = function(){
-        //     $scope.counter--;
-        //     if ($scope.counter > 0) {
-        //         mytimeout = $timeout($scope.onTimeout,1000);
-        //     }
-        //     else {
-        //         unansweredQuestions.push($stateParams.questions[$scope.currentQuestionIndex]);
-        //         $scope.currentQuestionIndex++;
-        //         $scope.madeSelection = false;
-        //         $scope.resetTimer();
-        //     }
-        // }
-        // var mytimeout = $timeout($scope.onTimeout,1000);
+        $scope.counter = 30;
+        var timer = $interval(function(){
+            if($scope.counter > 0){
+                $scope.counter--;
+                $scope.$apply();
+            }else if($scope.currentQuestionIndex == ($scope.questions.length-1)){
+                $scope.checkIfLastQuestion();
+                unansweredQuestions.push($stateParams.questions[$scope.currentQuestionIndex]);
+                $scope.currentQuestionIndex++;
+                $scope.madeSelection = false;
+            } else {
+                unansweredQuestions.push($stateParams.questions[$scope.currentQuestionIndex]);
+                $scope.currentQuestionIndex++;
+                $scope.madeSelection = false;
+                $scope.resetTimer();
+            }
+        }, 1000);  
+
+        $scope.$on('$destroy', function(event) {
+            $interval.cancel(timer);
+        });
+
     
-        // $scope.resetTimer = function(){
-        //     $scope.counter = 30;
-        //     mytimeout = $timeout($scope.onTimeout,1000);
-        // }
+        $scope.resetTimer = function(){
+            $scope.counter = 30;
+        }
 
     })
 
