@@ -6,30 +6,49 @@
 
   
     <ion-content overflow-scroll="true">
-
-        <div class="list card" ng-repeat="q in questions" ng-show="$index == currentQuestionIndex">
-            
-          <div class="item item-avatar item-positive">
-            <img ng-src="{{getSubjectImage(q.subject)}}">
-            <h2>{{q.subject}}</h2>
-            <h3>Score: {{score}}</h3>
-          </div>
-
-          <div class="item item-icon-left item-text-wrap">
-            <i class="icon ion-ios-help-outline"></i>
-            {{q.title}}
-          </div>
-          
-          <ion-list>
-          <div ng-repeat="choice in q.choices">
-            <a ng-click="choiceSelected($index)" class="item item-icon-left item-text-wrap item-stable">
-                <i ng-class="isSelectedIndex($index)? 'icon ion-android-checkmark-circle': 'icon ion-android-radio-button-off'"></i>
-                {{choice}}
-            </a>
-          </div>
-          </ion-list>
-
+        <div class="question-buttons" ng-repeat="q in questions" ng-hide="circleNav">
+          <button class="button-float" ng-class="$index==currentQuestionIndex? 'button-highlighted': 'button-unhighlighted'"></button>
         </div>
-        <a ng-click="madeSelection && enter()" ng-class="madeSelection? 'button-positive icon-right ion-android-exit': 'button-stable'" class="button button-block ">Submit</a>
+
+        <!-- <ion-scroll delegate-handle="small" style="height: 600px;"> -->
+
+          <div class="list card" ng-repeat="q in questions" ng-show="$index == currentQuestionIndex">
+              
+            <div class="item item-avatar item-positive">
+              <img ng-src="{{getSubjectImage(q.subject)}}">
+              <h2>{{q.subject}}</h2>
+              <h3>Score: {{score}}</h3>
+            </div>
+
+            <div class="item item-icon-left item-text-wrap">
+              <i class="icon ion-ios-help-outline"></i>
+              {{q.title}}
+            </div>
+            
+            <ion-list>
+              <div ng-repeat="choice in q.choices">
+                <div class="item item-icon-left item-text-wrap item-stable">
+                    <i ng-click="choiceSelected($index)" ng-class="isSelectedIndex($index)? 'icon ion-android-checkmark-circle': 'icon ion-android-radio-button-off'"></i>
+                    {{choice}}
+                </div>
+              </div>
+            </ion-list>
+
+          </div>
+
+          <a ng-click="madeSelection && enter()" ng-class="madeSelection? 'button-positive': 'button-stable'" class="button button-block ">
+            <div ng-hide="waitingForOpponent">
+            Submit
+            </div>
+
+            <div ng-show="waitingForOpponent">
+              Waiting for Opponent to Finish
+              <br>
+              <ion-spinner icon="android" class="spinner-positive" ng-hide="finished"></ion-spinner>
+              <i class="icon ion-checkmark-circled" ng-show="finished"></i>
+            </div>
+          </a>
+
+        <!-- </ion-scroll> -->
     </ion-content>
 </ion-view>

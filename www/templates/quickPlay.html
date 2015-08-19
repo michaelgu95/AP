@@ -1,7 +1,7 @@
 <ion-view title="Quick Play">
 
 	<ion-nav-buttons side="left">
-        <a class="button icon-left ion-chevron-left button-clear" href="#/tab/list"></a>
+        <a class="button icon-left ion-chevron-left button-clear" href="#/tab/list" ng-click="leaveQuick()"></a>
     </ion-nav-buttons>
 	<ion-content>
 		<div>
@@ -17,7 +17,7 @@
 					</select>
 				</label>
 
-			<button class="button button-balanced button-full" ng-click="findMatch(subject)">
+			<button ng-class="subject!=null? 'button-balanced': 'button-stable'" class="button button-full" ng-click="subject!=null && findMatch(subject)">
 				<div ng-hide="waiting">
 					Play
 				</div>

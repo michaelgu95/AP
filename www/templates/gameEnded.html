@@ -8,7 +8,11 @@
 		
 			<div class="list" >
 				<div class="item">
-			    	Score: {{score}}
+			    	Your Score: {{score}}
+			  	</div>
+
+			  	<div class="item" ng-show="$stateParams.opponentData !== 'null'">
+			    	Opponent's Score: {{opponentScore}}
 			  	</div>
 
 				<div class="item item-divider item-icon-left" ng-click="toggleCorrect()">
