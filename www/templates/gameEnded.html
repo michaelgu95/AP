@@ -64,6 +64,29 @@
 				         </div>
 			         </ion-list>
 	          	</div>
+
+	          	<div class="item item-divider item-icon-left" ng-click="toggleUnanswered()">
+			    	Unanswered Questions ({{unansweredQuestions.length}})
+			    	<i class="icon" ng-class="showUnanswered ? 'ion-android-arrow-dropdown' : 'ion-android-arrow-dropright'"></i>
+			  	</div>
+		
+
+				<div ng-repeat="q in unansweredQuestions" class="list card item-accordion" ng-show="showUnanswered">
+		             <a class="item item-icon-right item-text-wrap item-stable" ng-click="addQuestion(q)">
+			            <i class="icon ion-bookmark"></i>
+			            {{q.title}}
+			             
+			         </a>
+			          
+			         <ion-list>
+				         <div ng-repeat="choice in q.choices">
+				           <div class="item item-icon-left item-text-wrap">
+				               <i class="icon ion-ios-minus-empty" ng-show="isNormal(q,choice)"></i>
+				               {{choice}}
+				           </div>
+				         </div>
+			         </ion-list>
+	          	</div>
 					
 			</div>
 	

@@ -60,7 +60,7 @@ angular.module('starter',
                 url: "/gameEnded",
                 templateUrl: "templates/gameEnded.html",
                 controller: "GameEndedCtrl",
-                params: {'correctQuestions': null, 'wrongQuestions' : null, 'opponentData': null},
+                params: {'correctQuestions': null, 'wrongQuestions' : null, 'opponentData': null, 'unansweredQuestions': null},
                 cache:false
             })
 

@@ -81,7 +81,7 @@ angular.module('app.controllers', [])
             };
         })
 
-    .controller('QuickPlayCtrl', function($state, $scope, GameService, $ionicPopup, socket){
+    .controller('QuickPlayCtrl', function($state, $scope, GameService, $ionicPopup, $interval, socket){
         var user = Parse.User.current();
         var email = user.get("username");
         $scope.waiting = false;
@@ -89,6 +89,12 @@ angular.module('app.controllers', [])
 
         $scope.findMatch = function(subject){
             $scope.waiting = true;
+            $interval(function(){
+                if(!$scope.finished){
+                    $scope.waiting = false;
+                }
+            }, 10000);
+
             socket.emit('findOpponent', {user:user, email:email, subject:subject});
         }
 
@@ -207,18 +213,20 @@ angular.module('app.controllers', [])
                     socket.emit('finishedGame', {userEmail: Parse.User.current().get("username"), user: Parse.User.current(), score: $scope.score, correctQuestions: correctQuestions, wrongQuestions:wrongQuestions, opponentEmail:$stateParams.opponentEmail, opponent:$stateParams.opponent});
                     socket.on('opponentStatus', function(data){
                         if(data.msg == 'Finished'){
-                            $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'opponentData':data.opponentData});
+                            $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'unansweredQuestions':unansweredQuestions, 'opponentData':data.opponentData});
 
                         }else if(data.msg == 'Waiting'){
                             $scope.waitingForOpponent = true;
+                            $interval.cancel(timer);
                             socket.once('opponentFinished', function(data){
-                                $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'opponentData':data});
+                                $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'unansweredQuestions':unansweredQuestions,'opponentData':data});
                             });
                         }
                     })
         
                 }else if($stateParams.mode == "studying"){
-                    $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions});
+                    console.log(unansweredQuestions);
+                    $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'unansweredQuestions':unansweredQuestions});
                 }
                 
                 GameService.endGame(gameBeingPlayed);
@@ -236,7 +244,7 @@ angular.module('app.controllers', [])
 
         $scope.endGame = function(){
             if($stateParams.mode == "studying"){
-                $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions});
+                $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'unansweredQuestions':unansweredQuestions});
                 GameService.endGame(gameBeingPlayed);
             }else{
                 $ionicPopup.show({
@@ -248,7 +256,7 @@ angular.module('app.controllers', [])
                           type: 'button-positive',
                           onTap: function(e){
                             socket.emit('quitMatch', {userEmail: Parse.User.current().get("username"), opponentEmail:$stateParams.opponentEmail});
-                            $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'opponent':$stateParams.opponent});
+                            $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'unansweredQuestions':unansweredQuestions,'opponent':$stateParams.opponent});
                             GameService.endGame(gameBeingPlayed);
                           } 
                         }
@@ -265,7 +273,7 @@ angular.module('app.controllers', [])
                         { text: 'OK', 
                           type: 'button-positive',
                           onTap: function(e){
-                            $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions});
+                            $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'unansweredQuestions':unansweredQuestions});
                           } 
                         }
                     ]
@@ -276,10 +284,9 @@ angular.module('app.controllers', [])
         var timer = $interval(function(){
             if($scope.counter > 0){
                 $scope.counter--;
-                $scope.$apply();
             }else if($scope.currentQuestionIndex == ($scope.questions.length-1)){
-                $scope.checkIfLastQuestion();
                 unansweredQuestions.push($stateParams.questions[$scope.currentQuestionIndex]);
+                $scope.checkIfLastQuestion();
                 $scope.currentQuestionIndex++;
                 $scope.madeSelection = false;
             } else {
@@ -305,9 +312,11 @@ angular.module('app.controllers', [])
         $scope.score = Parse.User.current().get("score");
         $scope.wrongQuestions = $stateParams.wrongQuestions;
         $scope.correctQuestions = $stateParams.correctQuestions;
+        $scope.unansweredQuestions = $stateParams.unansweredQuestions;
         var savedQuestions = Parse.User.current().get("savedQuestions");
         $scope.showCorrect = false;
         $scope.showWrong = false;
+        $scope.showUnanswered = false;
 
         //set opponent fields
         if($stateParams.opponentData){
@@ -360,6 +369,10 @@ angular.module('app.controllers', [])
 
         $scope.toggleWrong = function(){
             $scope.showWrong = !$scope.showWrong;
+        }
+
+        $scope.toggleUnanswered = function(){
+            $scope.showUnanswered = !$scope.showUnanswered;
         }
 
         $scope.saveQuestions = function(){
