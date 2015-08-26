@@ -169,6 +169,7 @@ angular.module('app.controllers', [])
         var unansweredQuestions = new Array();
         var gameBeingPlayed = $stateParams.game;
         var selectedIndex;
+        
         console.log($stateParams.opponent);
         // console.log($stateParams.opponent.get("score"));
 
@@ -299,6 +300,7 @@ angular.module('app.controllers', [])
 
         $scope.$on('$destroy', function(event) {
             $interval.cancel(timer);
+
         });
 
     
@@ -324,10 +326,15 @@ angular.module('app.controllers', [])
             $scope.opponentScore = opponentData.score;
             $scope.opponentWrongQuestions = opponentData.wrongQuestions;
             $scope.opponentRightQuestions = opponentData.rightQuestions;
+            if($scope.opponentScore < $scope.score){
+                $scope.viewTitle = "You Won!";
+            }else if ($scope.opponentScore > $scope.score ){
+                $scope.viewTitle = "You Lost";
+            }else{
+                $scope.viewTitle = "Tie Match";
+            }
         }
         
-
-
         $scope.isNormal = function(question,choice){
             if(question.answer == choice){
                return false;

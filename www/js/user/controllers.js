@@ -5,8 +5,8 @@
  */
 angular.module('user.controllers', [])
     .controller('LoginController', [
-        '$state', '$scope', 'UserService',   // <-- controller dependencies
-        function ($state, $scope, UserService) {
+        '$state', '$scope', 'UserService', '$ionicPopup',   // <-- controller dependencies
+        function ($state, $scope, UserService, $ionicPopup) {
 
             debugger;
 
@@ -36,13 +36,34 @@ angular.module('user.controllers', [])
                 UserService.login($scope.creds.username, $scope.creds.password)
                     .then(function (_response) {
 
-                        alert("login success " + _response.attributes.username);
+                        $ionicPopup.show({
+                            title: "Login Successful!",
+                            buttons: [
+                                { text: 'OK', 
+                                  type: 'button-positive',
+                                  onTap: function(e){
+                                    $state.go('tab.list');
+                                  } 
+                                }
+                            ]
+                        })
 
                         // transition to next state
-                        $state.go('tab.list');
+                        
 
                     }, function (_error) {
-                        alert("error logging in " + _error.message);
+                        $ionicPopup.show({
+                            title: "Error",
+                            subTitle: "Incorrect Email or Password",
+                            buttons: [
+                                { text: 'OK', 
+                                  type: 'button-positive',
+                                  onTap: function(e){
+                                    $state.go('tab.list');
+                                  } 
+                                }
+                            ]
+                        })
                     })
             };
         }])

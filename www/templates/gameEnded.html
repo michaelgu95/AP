@@ -1,4 +1,5 @@
-<ion-view title="Feedback">
+<ion-view>
+	<ion-nav-title>{{viewTitle}}</ion-nav-title>
 
 	<ion-nav-buttons side="right">
         <a class="button button-clear" ng-click="saveQuestions()">Finish</a>
@@ -50,7 +51,6 @@
 		             <a class="item item-icon-right item-text-wrap item-stable" ng-click="addQuestion(q)">
 			            <i class="icon ion-bookmark"></i>
 			            {{q.title}}
-			             
 			         </a>
 			          
 			         <ion-list>
@@ -75,13 +75,13 @@
 		             <a class="item item-icon-right item-text-wrap item-stable" ng-click="addQuestion(q)">
 			            <i class="icon ion-bookmark"></i>
 			            {{q.title}}
-			             
 			         </a>
 			          
 			         <ion-list>
 				         <div ng-repeat="choice in q.choices">
 				           <div class="item item-icon-left item-text-wrap">
 				               <i class="icon ion-ios-minus-empty" ng-show="isNormal(q,choice)"></i>
+				               <i class="icon ion-checkmark-round" ng-show="isCorrect(q,choice)"></i>
 				               {{choice}}
 				           </div>
 				         </div>

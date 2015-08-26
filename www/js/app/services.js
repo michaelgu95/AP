@@ -139,44 +139,6 @@ angular.module('app.services', [])
 			        return {questions: questions, game: game, gameId: game.get("objectId")};
 			    },
 
-			    findMatch : function($scope, subject, user){
-			    	user.set("status", "finding");
-			    	user.set("searchingFor", subject);
-			    	user.save();
-
-			    	var query = new Parse.Query(Parse.User);
-			    	query.equalTo("searchingFor", subject);
-
-			    	var currentUserId = user.get("objectId");
-			    	// query.notEqualTo("objectId", currentUserId);
-
-			    	 var opponent;
-			    	query.find().then(function(results){
-			    		if(results.length > 0){
-			    			opponent = results[0];
-			    			
-			    		}
-					});
-
-					opponent.set("status", "playing");
-			    	opponent.save();
-
-					 // broadcast that a user has joined via Parse Cloud
-					// var userId = user.get("objectId");
-			  //  		Parse.Cloud.run('findOpponent', 
-			  //  			{subject:subject, userId: userId},
-					// 	{
-					// 		success : function(status){
-			  //  					console.log(status);
-				 //   			}, 
-				 //   			error : function(error){
-				 //   				console.log(error);
-				 //   			}
-			  //  			}
-			  //  		)
-
-			    },
-
 			    checkAnswer : function(questions, questionIndex, answerIndex, user, $scope){
 			   		var question = questions[questionIndex];
 
