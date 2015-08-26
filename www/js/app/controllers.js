@@ -89,9 +89,22 @@ angular.module('app.controllers', [])
 
         $scope.findMatch = function(subject){
             $scope.waiting = true;
-            $interval(function(){
+            var failurePopup = $interval(function(){
                 if(!$scope.finished){
-                    $scope.waiting = false;
+                     $ionicPopup.show({
+                        title: "No Available Opponents",
+                        subTitle: 'Try Again', 
+                        buttons: [
+                            { text: 'OK', 
+                              type: 'button-positive',
+                              onTap: function(e){
+                                $scope.waiting = false;
+                                socket.emit('leaveRoom', {email: email});
+                                $interval.cancel(failurePopup);
+                              } 
+                            }
+                        ]
+                     })
                 }
             }, 10000);
 
@@ -100,6 +113,7 @@ angular.module('app.controllers', [])
 
         $scope.leaveQuick = function(){
             socket.emit('leaveRoom', {email: email});
+            $interval.cancel(timer);
         }
         
         socket.once('opponentFound', function(data){
@@ -144,7 +158,6 @@ angular.module('app.controllers', [])
             }
             var username = Parse.User.current().get("username");
             socket.emit('join', {email: username});
-            
             // $scope.finished = true;
             // $state.go('tab.list');
             //pass questions and game to game state
@@ -169,7 +182,7 @@ angular.module('app.controllers', [])
         var unansweredQuestions = new Array();
         var gameBeingPlayed = $stateParams.game;
         var selectedIndex;
-        
+
         console.log($stateParams.opponent);
         // console.log($stateParams.opponent.get("score"));
 
@@ -208,7 +221,6 @@ angular.module('app.controllers', [])
         }
 
         $scope.checkIfLastQuestion = function(){
-            
                 if($stateParams.mode == "quickPlay"){
                     // $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'opponent':$stateParams.opponent});
                     socket.emit('finishedGame', {userEmail: Parse.User.current().get("username"), user: Parse.User.current(), score: $scope.score, correctQuestions: correctQuestions, wrongQuestions:wrongQuestions, opponentEmail:$stateParams.opponentEmail, opponent:$stateParams.opponent});
@@ -300,14 +312,11 @@ angular.module('app.controllers', [])
 
         $scope.$on('$destroy', function(event) {
             $interval.cancel(timer);
-
         });
 
-    
         $scope.resetTimer = function(){
             $scope.counter = 30;
         }
-
     })
 
     .controller('GameEndedCtrl', function($scope, $state, $stateParams, GameService, socket){
