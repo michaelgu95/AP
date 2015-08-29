@@ -61,11 +61,11 @@ angular.module('app.services', [])
 
 				    var users = [Parse.User.current().get("username")];
 				    game.set("users", users);
-				    game.set("creator", Parse.User.current());
-				    game.set("player1", Parse.User.current());
-				    game.set("gameStatus", "waiting");
-				    game.set("gameLock", 1);
-				    game.set("turn", "player2");
+				    // game.set("creator", Parse.User.current());
+				    // game.set("player1", Parse.User.current());
+				    // game.set("gameStatus", "waiting");
+				    // game.set("gameLock", 1);
+				    // game.set("turn", "player2");
 
         			
 			        var Question = Parse.Object.extend("Question");
@@ -208,7 +208,7 @@ angular.module('app.services', [])
 			   		return defer.promise;
 			   	},
 
-			   	endGame : function(game){
+			   	endGame : function(g){
 			 
 				    game.destroy({});
 				    console.log("game destroyed: " + game);

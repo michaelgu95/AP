@@ -113,7 +113,6 @@ angular.module('app.controllers', [])
 
         $scope.leaveQuick = function(){
             socket.emit('leaveRoom', {email: email});
-            $interval.cancel(timer);
         }
         
         socket.once('opponentFound', function(data){
@@ -170,7 +169,7 @@ angular.module('app.controllers', [])
     })
 
 
-    .controller('GameCtrl', function($state, $scope, $rootScope, GameService, $ionicNavBarDelegate, $stateParams, $ionicPopup, $ionicScrollDelegate, $interval, socket){
+    .controller('GameCtrl', function($state, $scope, $rootScope, GameService, $ionicNavBarDelegate, $stateParams, $ionicPopup, $ionicScrollDelegate, $interval, socket, $timeout){
         $ionicNavBarDelegate.showBackButton(false);
         $scope.questions = $stateParams.questions;
         $scope.score = 0;
@@ -196,12 +195,20 @@ angular.module('app.controllers', [])
         $scope.choiceSelected = function(index){
            selectedIndex = index;
            $scope.madeSelection = true;
-           // $ionicScrollDelegate.$getByHandle('small').scrollBottom();
+           $timeout(function(){
+                // $ionicScrollDelegate.scrollBottom(true);
+                $ionicScrollDelegate.$getByHandle('gameScroll').scrollBottom();
+           });
+           
         }
 
         $scope.enter = function(){
             var isCorrect = GameService.checkAnswer($scope.questions, $scope.currentQuestionIndex, selectedIndex, Parse.User.current(), $scope);
-            // $ionicScrollDelegate.$getByHandle('small').scrollTop();
+            
+            $timeout(function(){
+                // $ionicScrollDelegate.scrollTop(true);
+                $ionicScrollDelegate.$getByHandle('gameScroll').scrollTop();
+            });
             $scope.resetTimer();
             if(isCorrect){
                 //add to correct questions
@@ -243,7 +250,6 @@ angular.module('app.controllers', [])
                 }
                 
                 GameService.endGame(gameBeingPlayed);
-            
         }
 
         $scope.getSubjectImage = function(subject){

@@ -5,13 +5,11 @@
         <a class="button icon-left ion-flag button-stable" ng-click="endGame()">End</a>
     </ion-nav-buttons>
 
-  
-    <ion-content overflow-scroll="true">
+   
+    <ion-content delegate-handle="gameScroll">
         <div class="question-buttons" ng-repeat="q in questions" ng-hide="circleNav">
           <button class="button-float" ng-class="$index==currentQuestionIndex? 'button-highlighted': 'button-unhighlighted'"></button>
         </div>
-
-        <!-- <ion-scroll delegate-handle="small" style="height: 600px;"> -->
 
           <div class="list card" ng-repeat="q in questions" ng-show="$index == currentQuestionIndex">
               
