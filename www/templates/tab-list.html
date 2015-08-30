@@ -9,23 +9,41 @@
         </button>
     </ion-nav-buttons>
     <ion-content>
-        <!-- <div class="countdown" data-role="countdown" data-days="2"></div> -->
 
-        <button class="button button-block button-positive" ng-click="quickPlay()">
-            Quick Play
-        </button>
+        <div class="row">
+            <button class="button  button-positive button-menu col col-50 icon" ng-click="quickPlay()">
+                <i class="icon ion-paper-airplane"></i>
+                <br>
+                Quick Play
+                
+               
+            </button>
 
-        <button class="button button-block button-stable" ng-click="createGame()">
-            Create Game (Teachers)
-        </button>
+            
+            <button class="button button-positive button-menu col col-50" ng-click="study()">
+                <i class="icon ion-android-create"></i>
+                <br>
+                Study (1 Player)
+            </button>
+        </div>
 
-        <button class="button button-block button-positive" ng-click="findGame()">
-            Find Game
-        </button>
+         <div class="row">
 
-        <button class="button button-block button-stable" ng-click="study()">
-            Study (1 Player)
-        </button>
+            <button class="button button-positive button-menu col col-50" ng-click="findGame()">
+                <i class="icon ion-android-search"></i>
+                <br>
+                Find Game
+            </button>
+
+            <button class="button  button-positive button-menu col col-50" ng-click="createGame()">
+                <i class="icon ion-plus-round"></i>
+                <br>
+                Create Game (Teachers)
+            </button>
+
+            
+        </div>
+        
 
         <div class="list card" >
             

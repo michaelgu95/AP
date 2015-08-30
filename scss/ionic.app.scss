@@ -24,7 +24,14 @@ $stable: 						  #fff !default;
 $font-family-sans-serif:          "Ubuntu", "Ubuntu", sans-serif !default;
 $popup-background-color:          #444 !default;
 
+.button.button-positive {
+  border-width: 4px;
+  border-color:#fff;
+}
 
+.button-menu{
+  height:170px;
+}
 
 .button-float{
   
