@@ -7,53 +7,20 @@ angular.module('app.controllers', [])
     .controller('ListDetailCtrl', [
         '$state', '$scope', '$stateParams', 'UserService',   // <-- controller dependencies
         function ($state, $scope, $stateParams, UserService) {
-
             $scope.index = $stateParams.itemId;
-
         }])
     .controller('HomeCtrl',   
         function ($state, $scope, UserService, GameService, socket) {
-            $scope.games = new Array(); 
-
-        //     var rawGames = Parse.User.current().get("currentGames");
-        //     var Game = Parse.Object.extend("Game");
-        //     var gameQuery = new Parse.Query(Game);
-        //     for(var i=0;i<rawGames.length;i++){
-        //         var game = rawGames[i];
-        //         gameQuery.equalTo("objectId", game);
-        //         gameQuery.limit(1);
-        //         gameQuery.find().then(function(results){
-        //         $scope.$apply(function(){
-        //             for(i in results) {
-        //                         var obj = results[i];
-        //                         var users = obj.get("users");
-        //                         var subject = obj.get("subject");
-        //                         var id = obj.get("objectId");
-        //                         var questions = obj.get("questions");
-        //                         var classKey = obj.get("classKey");
-        //                         var creator = obj.get("creator").get("username");
-        //                         $scope.games.push({
-        //                             users: users,
-        //                             subject: subject, 
-        //                             id: id, 
-        //                             questions : questions, 
-        //                             object: obj, 
-        //                             classKey: classKey, 
-        //                             creator : creator
-        //                         })
-        //                     }
-        //         })
-        //     })
-        // }
-        $scope.messages = new Array();
-        socket.on("userJoined", function(data) {
-            var message = data.msg + " with username: " + data.user;
-            alert(message);
-            $scope.messages.push(message);
-        })
+            $scope.games = new Array();
+            $scope.messages = new Array();
+            socket.on("userJoined", function(data) {
+                var message = data.msg + " with username: " + data.user;
+                alert(message);
+                $scope.messages.push(message);
+            })
 
             $scope.quickPlay = function() {
-                $state.go('quickPlay', {}, {reload: true});
+               $state.go('quickPlay', {}, {reload: true});
             };
 
             $scope.createGame = function(){
@@ -86,11 +53,20 @@ angular.module('app.controllers', [])
         var email = user.get("username");
         $scope.waiting = false;
         $scope.finished = false;
+        var failurePopup;
+        var subject;
+        var opponentFound = false;
 
         $scope.findMatch = function(subject){
-            $scope.waiting = true;
+            subject = subject;
+            if(!$scope.waiting){
+             socket.emit('findOpponent', {user:user, email:email, subject:subject});
+             console.log("findingOpponent");
+             $scope.waiting = true;
+            }   
+            
             var failurePopup = $interval(function(){
-                if(!$scope.finished){
+                if(!$scope.finished && $scope.waiting==true){
                      $ionicPopup.show({
                         title: "No Available Opponents",
                         subTitle: 'Try Again', 
@@ -99,7 +75,7 @@ angular.module('app.controllers', [])
                               type: 'button-positive',
                               onTap: function(e){
                                 $scope.waiting = false;
-                                socket.emit('leaveRoom', {email: email});
+                                socket.emit('leaveRoom', {user:user, email:email, subject:subject});
                                 $interval.cancel(failurePopup);
                               } 
                             }
@@ -107,29 +83,45 @@ angular.module('app.controllers', [])
                      })
                 }
             }, 10000);
-
-            socket.emit('findOpponent', {user:user, email:email, subject:subject});
         }
 
         $scope.leaveQuick = function(){
-            socket.emit('leaveRoom', {email: email});
+            socket.emit('leaveRoom', {user:user, email:email, subject:subject});
+            $scope.waiting = false;
+            console.log("leftroom");
+            $state.go('tab.list', {}, {reload: true});
         }
         
+        $scope.popups = new Array();
         socket.once('opponentFound', function(data){
+                console.log("opponentFound");
                 $scope.finished = true;
                 var gs = GameService.createGame($scope, data.subject, 5);
-                $ionicPopup.show({
-                    title: data.msg,
-                    subTitle: 'Username: ' + data.opponentEmail, 
-                    buttons: [
-                        { text: 'Start Game', 
-                          type: 'button-positive',
-                          onTap: function(e){
-                            $state.go('game', {'questions': gs.questions, 'game':gs.game, 'opponent':data.opponent, 'opponentEmail':data.opponentEmail, 'mode':"quickPlay"});
-                          } 
-                        }
-                    ]
-                })
+                if(opponentFound == false){
+                    opponentFound = true;
+                    var opponentFoundPopup = $ionicPopup.show({
+                        title: data.msg,
+                        subTitle: 'Username: ' + data.opponentEmail, 
+                        buttons: [
+                            { text: 'Start Game', 
+                              type: 'button-positive',
+                              onTap: function(e){
+                                $scope.popups.push(opponentFoundPopup);
+                                $state.go('game', {'questions': gs.questions, 'game':gs.game, 'opponent':data.opponent, 'opponentEmail':data.opponentEmail, 'mode':"quickPlay"});
+                                // if ($ionicPopup._popupStack.length > 0) {
+                                //     $ionicPopup._popupStack.forEach(function(popup, index) {
+                                //         if (popup.isShown === true) {
+                                //             return popup.hide();
+                                //         }
+                                // })
+                                $scope.popups.forEach(function(popup){
+                                    popup.close();
+                                })
+                              } 
+                            }
+                        ]
+                    })
+                }
         });
     })
 
@@ -181,9 +173,6 @@ angular.module('app.controllers', [])
         var unansweredQuestions = new Array();
         var gameBeingPlayed = $stateParams.game;
         var selectedIndex;
-
-        console.log($stateParams.opponent);
-        // console.log($stateParams.opponent.get("score"));
 
         var answers = [];
         var choices = [];
@@ -246,7 +235,7 @@ angular.module('app.controllers', [])
         
                 }else if($stateParams.mode == "studying"){
                     console.log(unansweredQuestions);
-                    $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'unansweredQuestions':unansweredQuestions});
+                    $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'unansweredQuestions':unansweredQuestions, 'opponentData': null});
                 }
                 
                 GameService.endGame(gameBeingPlayed);
@@ -336,7 +325,7 @@ angular.module('app.controllers', [])
         $scope.showUnanswered = false;
 
         //set opponent fields
-        if($stateParams.opponentData){
+        if($stateParams.opponentData != null){
             var opponentData = $stateParams.opponentData;
             $scope.opponentScore = opponentData.score;
             $scope.opponentWrongQuestions = opponentData.wrongQuestions;
@@ -398,7 +387,7 @@ angular.module('app.controllers', [])
         }
 
         $scope.saveQuestions = function(){
-            // Parse.User.current().set("savedQuestions", savedQuestions);
+            Parse.User.current().set("savedQuestions", savedQuestions);
            
             Parse.User.current().save({savedQuestions: savedQuestions}, {
                                     success: function(object){
@@ -441,7 +430,6 @@ angular.module('app.controllers', [])
 
         $scope.enterGame = function(game){
             if(game.classKey != null){
-
                     var myPopup = $ionicPopup.show({
                         template: '<style>.p{ color:black }</style><input type="password" ng-model="classKey">',
                         title: '<p>Enter Class Key</p>',

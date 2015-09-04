@@ -6,7 +6,7 @@ For example, you might change some of the default colors:
 
 $light:                           #fff !default;
 $stable:                          #f8f8f8 !default;
-$positive:                        #387ef5 !default;
+$positive:                        #8ce3f3!default;
 $calm:                            #11c1f3 !default;
 $balanced:                        #33cd5f !default;
 $energized:                       #ffc900 !default;
@@ -14,12 +14,17 @@ $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
+i.icon.ion-paper-airplane.menu-icon {
+  font-size: 75px; }
+
 .button.button-positive {
   border-width: 4px;
-  border-color: #fff; }
+  border-color: null; }
 
-.button-menu {
-  height: 170px; }
+.button.button-positive.button-menu {
+  height: 170px;
+  border-color: #f8f8f8;
+  border-width: 4px; }
 
 .button-float {
   color: black !important;
@@ -6639,7 +6644,7 @@ progress {
         box-shadow: none;
         color: #fff; }
   .button.button-positive {
-    border-color: #fff;
+    border-color: #35c0ea;
     background-color: #63cdef;
     color: #fff; }
     .button.button-positive:hover {

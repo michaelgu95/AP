@@ -1,8 +1,8 @@
 angular.module('app.services', [])
   .factory('socket',function(socketFactory){
         //Create socket and connect to http://chat.socket.io 
-         var myIoSocket = io.connect('https://floating-everglades-6359.herokuapp.com/');
-         // var myIoSocket = io.connect('http://localhost:3000');
+         // var myIoSocket = io.connect('https://floating-everglades-6359.herokuapp.com/');
+         var myIoSocket = io.connect('http://localhost:3000');
 
           mySocket = socketFactory({
             ioSocket: myIoSocket

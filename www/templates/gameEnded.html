@@ -12,7 +12,7 @@
 			    	Your Score: {{score}}
 			  	</div>
 
-			  	<div class="item" ng-show="$stateParams.opponentData !== 'null'">
+			  	<div class="item" ng-hide="$scope.opponentScore == null">
 			    	Opponent's Score: {{opponentScore}}
 			  	</div>
 
