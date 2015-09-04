@@ -2,4 +2,4 @@ AP
 ---
 ## Overview
 Trivia & Quiz based game for AP Exam preparation. Intended for both in and out of class studying.
-[Menu](Screenshots/menu.png)
+![MyImage](Screenshots/menu.png)
