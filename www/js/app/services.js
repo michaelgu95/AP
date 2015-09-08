@@ -208,11 +208,8 @@ angular.module('app.services', [])
 			   		return defer.promise;
 			   	},
 
-			   	endGame : function(g){
-			 
+			   	endGame : function(game){
 				    game.destroy({});
-				    console.log("game destroyed: " + game);
-				
 			   	},
 
 			   	startStudying : function($scope, subject, count){
