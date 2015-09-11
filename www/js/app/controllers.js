@@ -56,15 +56,39 @@ angular.module('app.controllers', [])
         var failurePopup;
         var subject;
         var opponentFound = false;
+        var leftRoom = false;
 
         $scope.findMatch = function(subject){
             subject = subject;
-            if(!$scope.waiting){
-             socket.emit('findOpponent', {user:user, email:email, subject:subject});
-             console.log("findingOpponent");
-             $scope.waiting = true;
-            }   
+
+            socket.emit('findOpponent', {user:user, email:email, subject:subject});
+            console.log("findingOpponent");
+            $scope.waiting = true;
             
+            socket.once('opponentFound', function(data){
+                    if(leftRoom==false){
+                        console.log("opponentFound");
+                        $scope.finished = true;
+                        var gs = GameService.createGame($scope, data.subject, 5);
+                        if(opponentFound == false){
+                            opponentFound = true;
+                            var opponentFoundPopup = $ionicPopup.show({
+                                title: data.msg,
+                                subTitle: 'Username: ' + data.opponentEmail, 
+                                buttons: [
+                                    { text: 'Start Game', 
+                                      type: 'button-positive',
+                                      onTap: function(e){
+                                        $state.go('game', {'questions': gs.questions, 'game':gs.game, 'opponent':data.opponent, 'opponentEmail':data.opponentEmail, 'mode':"quickPlay"});
+                                      } 
+                                    }
+                                ]
+                            })
+                        }
+
+                    } 
+            });
+
             var failurePopup = $interval(function(){
                 if(!$scope.finished && $scope.waiting==true){
                      $ionicPopup.show({
@@ -75,7 +99,7 @@ angular.module('app.controllers', [])
                               type: 'button-positive',
                               onTap: function(e){
                                 $scope.waiting = false;
-                                socket.emit('leaveRoom', {user:user, email:email, subject:subject});
+                                socket.emit('leaveRoom', {user:user, email:email});
                                 $interval.cancel(failurePopup);
                               } 
                             }
@@ -85,44 +109,19 @@ angular.module('app.controllers', [])
             }, 10000);
         }
 
+
         $scope.leaveQuick = function(){
-            socket.emit('leaveRoom', {user:user, email:email, subject:subject});
+            socket.emit('leaveRoom', {user:user, email:email});
             $scope.waiting = false;
             console.log("leftroom");
             $state.go('tab.list', {}, {reload: true});
         }
+      
+        socket.on('leftRoomOnce', function(data){
+            leftRoom = true;
+        })
+
         
-        $scope.popups = new Array();
-        socket.once('opponentFound', function(data){
-                console.log("opponentFound");
-                $scope.finished = true;
-                var gs = GameService.createGame($scope, data.subject, 5);
-                if(opponentFound == false){
-                    opponentFound = true;
-                    var opponentFoundPopup = $ionicPopup.show({
-                        title: data.msg,
-                        subTitle: 'Username: ' + data.opponentEmail, 
-                        buttons: [
-                            { text: 'Start Game', 
-                              type: 'button-positive',
-                              onTap: function(e){
-                                $scope.popups.push(opponentFoundPopup);
-                                $state.go('game', {'questions': gs.questions, 'game':gs.game, 'opponent':data.opponent, 'opponentEmail':data.opponentEmail, 'mode':"quickPlay"});
-                                // if ($ionicPopup._popupStack.length > 0) {
-                                //     $ionicPopup._popupStack.forEach(function(popup, index) {
-                                //         if (popup.isShown === true) {
-                                //             return popup.hide();
-                                //         }
-                                // })
-                                $scope.popups.forEach(function(popup){
-                                    popup.close();
-                                })
-                              } 
-                            }
-                        ]
-                    })
-                }
-        });
     })
 
     .controller('CreateGameCtrl', function($state, $scope, GameService, $ionicLoading, socket){
