@@ -61,13 +61,7 @@ angular.module('app.services', [])
 
 				    var users = [Parse.User.current().get("username")];
 				    game.set("users", users);
-				    // game.set("creator", Parse.User.current());
-				    // game.set("player1", Parse.User.current());
-				    // game.set("gameStatus", "waiting");
-				    // game.set("gameLock", 1);
-				    // game.set("turn", "player2");
-
-        			
+				   
 			        var Question = Parse.Object.extend("Question");
 			        var query = new Parse.Query(Question);
 			        query.equalTo("Subject", subject);
@@ -213,7 +207,6 @@ angular.module('app.services', [])
 			   	},
 
 			   	startStudying : function($scope, subject, count){
-			        // game = new Game();
 			        var deferred = $q.defer();
 
         			var subject = subject;

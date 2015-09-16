@@ -327,6 +327,7 @@ angular.module('app.controllers', [])
         if($stateParams.opponentData != null){
             var opponentData = $stateParams.opponentData;
             $scope.opponentScore = opponentData.score;
+            console.log($scope.opponentScore);
             $scope.opponentWrongQuestions = opponentData.wrongQuestions;
             $scope.opponentRightQuestions = opponentData.rightQuestions;
             if($scope.opponentScore < $scope.score){
@@ -335,6 +336,14 @@ angular.module('app.controllers', [])
                 $scope.viewTitle = "You Lost";
             }else{
                 $scope.viewTitle = "Tie Match";
+            }
+        }
+
+        $scope.opponentDataExists = function(){
+            if($stateParams.opponentData == null){
+                return true;
+            }else{
+                return false;
             }
         }
         
