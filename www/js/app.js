@@ -168,4 +168,9 @@ angular.module('starter',
                 StatusBar.styleDefault();
             }
         });
+
+        $ionicPlatform.on('pause', function() {
+            $rootScope.$broadcast('onPause');
+            $rootScope.$apply();
+        });
     })

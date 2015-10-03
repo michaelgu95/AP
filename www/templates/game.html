@@ -1,5 +1,5 @@
 <ion-view title=>
-  <ion-nav-title ng-hide="waitingForOpponent">Time: 0:{{counter}}  ||  Question {{currentQuestionIndex +1}}/{{questions.length}}</ion-nav-title>
+  <ion-nav-title ng-hide="waitingForOpponent" align-title="left">Question {{currentQuestionIndex +1}}/{{questions.length}} - 0:{{counter}}</ion-nav-title>
 
   <ion-nav-buttons side="right">
         <a class="button icon-left ion-flag button-stable" ng-click="endGame()">End</a>

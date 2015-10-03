@@ -159,7 +159,7 @@ angular.module('app.controllers', [])
     })
 
 
-    .controller('GameCtrl', function($state, $scope, $rootScope, GameService, $ionicNavBarDelegate, $stateParams, $ionicPopup, $ionicScrollDelegate, $interval, socket, $timeout){
+    .controller('GameCtrl', function($state, $scope, $rootScope, GameService, $ionicNavBarDelegate, $stateParams, $ionicPopup, $ionicScrollDelegate, $interval, socket, $timeout, $ionicPlatform){
         $ionicNavBarDelegate.showBackButton(false);
         $scope.questions = $stateParams.questions;
         $scope.score = 0;
@@ -179,6 +179,7 @@ angular.module('app.controllers', [])
             choices.push($scope.questions[i].choices);
         }
 
+        //user selected choice
         $scope.choiceSelected = function(index){
            selectedIndex = index;
            $scope.madeSelection = true;
@@ -189,6 +190,7 @@ angular.module('app.controllers', [])
            
         }
 
+        //user pressed submit
         $scope.enter = function(){
             var isCorrect = GameService.checkAnswer($scope.questions, $scope.currentQuestionIndex, selectedIndex, Parse.User.current(), $scope);
             
@@ -204,7 +206,7 @@ angular.module('app.controllers', [])
                 $scope.madeSelection = false;
             }else {
                 
-                //add to wrong qeustions
+                //add to wrong questions
                 wrongQuestions.push($stateParams.questions[$scope.currentQuestionIndex]);
                 $scope.currentQuestionIndex++;
                 $scope.madeSelection = false;
@@ -214,6 +216,7 @@ angular.module('app.controllers', [])
             }   
         }
 
+        //check to see if question submitted was last, perform various state changes depending on mode
         $scope.checkIfLastQuestion = function(){
                 if($stateParams.mode == "quickPlay"){
                     // $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'opponent':$stateParams.opponent});
@@ -238,11 +241,13 @@ angular.module('app.controllers', [])
                 GameService.endGame(gameBeingPlayed);
         }
 
+
         $scope.getSubjectImage = function(subject){
             var imagePath = "img/" + subject + ".png";
             return imagePath;
         }
 
+        //to determine whether to add a check icon to the radiobutton
         $scope.isSelectedIndex = function(index){
             return index == selectedIndex && $scope.madeSelection;
         }
@@ -285,6 +290,25 @@ angular.module('app.controllers', [])
                 })
         })
 
+        $ionicPlatform.on('pause', function() {
+            console.log('paused game');
+            if($stateParams.mode == "studying"){
+                $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'unansweredQuestions':unansweredQuestions});
+                GameService.endGame(gameBeingPlayed);
+            }else{
+                socket.emit('quitMatch', {userEmail: Parse.User.current().get("username"), opponentEmail:$stateParams.opponentEmail});
+                $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'unansweredQuestions':unansweredQuestions,'opponent':$stateParams.opponent});
+                GameService.endGame(gameBeingPlayed);
+            }
+        });
+
+
+        $rootScope.$on('onPause', function() {
+            
+
+        });
+
+        //timer functions
         $scope.counter = 30;
         var timer = $interval(function(){
             if($scope.counter > 0){
