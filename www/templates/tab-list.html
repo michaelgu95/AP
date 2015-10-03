@@ -38,7 +38,6 @@
             </button>
         </div>
         
-
         <div class="list card" >
             
           <div class="item item-icon-left item-balanced">
@@ -47,16 +46,13 @@
           </div>
           
           <ion-list>
-          
             <a ng-repeat="game in games" ng-click="enterGame(game)" class="item item-icon-right item-text-wrap item-stable item-avatar">
                 <img ng-src="{{getSubjectImage(game.subject)}}">
                 <i class="icon ion-ios-play-outline"></i>
                 {{game.subject}}
                 {{game.creator}}
             </a>
-
             <div ng-repeat="message in messages">
-                
             <h2>{{message}}</h2>
             </div>
           </ion-list>

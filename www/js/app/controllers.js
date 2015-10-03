@@ -116,7 +116,6 @@ angular.module('app.controllers', [])
             console.log("leftroom");
             $state.go('tab.list', {}, {reload: true});
         }
-      
         socket.on('leftRoomOnce', function(data){
             leftRoom = true;
         })
@@ -236,7 +235,6 @@ angular.module('app.controllers', [])
                     console.log(unansweredQuestions);
                     $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'unansweredQuestions':unansweredQuestions, 'opponentData': null});
                 }
-                
                 GameService.endGame(gameBeingPlayed);
         }
 
@@ -319,6 +317,7 @@ angular.module('app.controllers', [])
         $scope.correctQuestions = $stateParams.correctQuestions;
         $scope.unansweredQuestions = $stateParams.unansweredQuestions;
         var savedQuestions = Parse.User.current().get("savedQuestions");
+        console.log(savedQuestions);
         $scope.showCorrect = false;
         $scope.showWrong = false;
         $scope.showUnanswered = false;
@@ -395,19 +394,7 @@ angular.module('app.controllers', [])
         }
 
         $scope.saveQuestions = function(){
-            Parse.User.current().set("savedQuestions", savedQuestions);
-           
-            Parse.User.current().save({savedQuestions: savedQuestions}, {
-                                    success: function(object){
-                                        console.log('successfully saved questions');
-                                        
-                                    },
-                                    error:function(err) { 
-                                        console.log(err.message);
-                                    }   
-                                });
-            Parse.User.current().set("score", 0);
-            Parse.User.current().save();
+            GameService.saveQuestions(savedQuestions);
             $state.go('tab.list', {}, {reload: true});
         }
     })
@@ -483,9 +470,9 @@ angular.module('app.controllers', [])
     .controller('StudyModeCtrl', function($state, $scope, GameService){
         $scope.waiting = false;
         $scope.startGame = function(subject, count){
-            $scope.waiting = true;
+            // $scope.waiting = true;
             GameService.startStudying($scope, subject, count).then(function(questions){
-                 $scope.waiting = false;
+                 // $scope.waiting = false;
                  $state.go('game', {'questions':questions, 'mode':"studying"});
             });
         }

@@ -28,6 +28,16 @@ i.icon.ion-paper-airplane.menu-icon{
   font-size:75px;
 }
 
+progress {
+  /* Reset the default appearance */
+  height: 20px;
+}
+
+progress::-webkit-progress-bar-value {
+  -webkit-appearance: none;
+  background: orangered;
+}
+
 .button.button-positive {
   border-width: 4px;
   border-color: null;

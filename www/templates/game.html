@@ -1,18 +1,18 @@
 <ion-view title=>
   <ion-nav-title ng-hide="waitingForOpponent">Time: 0:{{counter}}</ion-nav-title>
 
-  <ion-nav-buttons side="right">
+  <ion-nav-buttons side="left">
         <a class="button icon-left ion-flag button-stable" ng-click="endGame()">End</a>
     </ion-nav-buttons>
-
    
     <ion-content delegate-handle="gameScroll">
-        <div class="question-buttons" ng-repeat="q in questions" ng-hide="circleNav">
+        <!-- <div class="question-buttons" ng-repeat="q in questions" ng-hide="circleNav">
           <button class="button-float" ng-class="$index==currentQuestionIndex? 'button-highlighted': 'button-unhighlighted'"></button>
-        </div>
-
+        </div> --> 
           <div class="list card" ng-repeat="q in questions" ng-show="$index == currentQuestionIndex">
-              
+            <progress value="{{$index/(questions.length)}}" max="questions.length">
+            {{$index}}
+            </progress>
             <div class="item item-avatar item-positive">
               <img ng-src="{{getSubjectImage(q.subject)}}">
               <h2>{{q.subject}}</h2>
@@ -32,7 +32,6 @@
                 </div>
               </div>
             </ion-list>
-
           </div>
 
           <a ng-click="madeSelection && enter()" ng-class="madeSelection? 'button-positive': 'button-stable'" class="button button-block ">
