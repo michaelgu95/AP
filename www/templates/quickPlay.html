@@ -4,20 +4,51 @@
         <a class="button icon-left ion-chevron-left button-clear" ng-click="leaveQuick()"></a>
     </ion-nav-buttons>
 	<ion-content>
-		<div>
+		<div class="card">
 
-				<!-- Subject -->
+				<div class="item item-divider">
+				    Search for Question Set:
+				</div>
+
+				<label class="item item-input">
+					
+						
+					    <i class="icon ion-search placeholder-icon"></i>
+					    <input type="text" ng-model="setFilter"  ng-change="findSet(setFilter)" placeholder="Set Name">
+				</label>
+
+						<label class="list" ng-repeat="set in questionSets">
+							<div class="item item-radio">
+							<input  type="radio" ng-model="setTitle" value="set" ng-click="makeSetTitle(set)">
+
+							   <div class="item-content">
+							   	{{set}}
+								
+							   </div>
+								<i class="radio-icon ion-checkmark"></i>
+							      
+							
+							   
+							</input>
+						    </div>
+						</label>
+				
+				
+				<!-- <div class="item item-divider">
+				    Or Subject:
+				</div>
+				
 				<label class="item item-input item-select">
 					<div class="input-label">
 						Subject
 					</div>
-					<select ng-model="subject">
+					<select ng-model="setTitle">
 						<option selected>Psychology</option>
 						<option>World History</option>
 					</select>
-				</label>
-
-			<button ng-class="subject!=null? 'button-balanced': 'button-stable'" class="button button-full" ng-click="subject!=null && findMatch(subject)">
+				</label> -->
+		</div>
+			<button ng-class="setTitle!=null? 'button-balanced': 'button-stable'" class="button button-full" ng-click="setTitle!=null && findMatch(setTitle)">
 				<div ng-hide="waiting">
 					Play
 				</div>
@@ -29,5 +60,6 @@
 					<i class="icon ion-checkmark-circled" ng-show="finished"></i>
 				</div>
 			</button>
+		
 	</ion-content>
 </ion-view>

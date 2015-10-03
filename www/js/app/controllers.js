@@ -57,8 +57,24 @@ angular.module('app.controllers', [])
         var subject;
         var opponentFound = false;
         var leftRoom = false;
+        $scope.questionSets = [];
 
-        $scope.findMatch = function(subject){
+        $scope.findSet = function(setName){
+            console.log('finding set with name ' + setName);
+
+            $scope.questionSets = GameService.findSets(setName);
+            if($scope.questionSets.length > 0){
+                console.log('found sets');
+            }else{
+                console.log('no sets found');
+            }
+        }
+
+        $scope.makeSetTitle = function(set){
+            $scope.setTitle = set;
+        }
+
+        $scope.findMatch = function(setTitle){
             subject = subject;
 
             socket.emit('findOpponent', {user:user, email:email, subject:subject});
@@ -69,7 +85,9 @@ angular.module('app.controllers', [])
                     if(leftRoom==false){
                         console.log("opponentFound");
                         $scope.finished = true;
-                        var gs = GameService.createGame($scope, data.subject, 5);
+
+                        // var gs = GameService.createGame($scope, data.subject, 5);
+                        var gs = GameService.createGameWithSetName($scope, setTitle);
                         if(opponentFound == false){
                             opponentFound = true;
                             var opponentFoundPopup = $ionicPopup.show({
@@ -116,11 +134,10 @@ angular.module('app.controllers', [])
             console.log("leftroom");
             $state.go('tab.list', {}, {reload: true});
         }
+
         socket.on('leftRoomOnce', function(data){
             leftRoom = true;
         })
-
-        
     })
 
     .controller('CreateGameCtrl', function($state, $scope, GameService, $ionicLoading, socket){
@@ -290,22 +307,15 @@ angular.module('app.controllers', [])
                 })
         })
 
+        //if user exits/pauses app, forfeit match to ensure no cheating
         $ionicPlatform.on('pause', function() {
             console.log('paused game');
             if($stateParams.mode == "studying"){
-                $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'unansweredQuestions':unansweredQuestions});
-                GameService.endGame(gameBeingPlayed);
             }else{
                 socket.emit('quitMatch', {userEmail: Parse.User.current().get("username"), opponentEmail:$stateParams.opponentEmail});
                 $state.go('gameEnded', {'correctQuestions': correctQuestions, 'wrongQuestions':wrongQuestions, 'unansweredQuestions':unansweredQuestions,'opponent':$stateParams.opponent});
                 GameService.endGame(gameBeingPlayed);
             }
-        });
-
-
-        $rootScope.$on('onPause', function() {
-            
-
         });
 
         //timer functions

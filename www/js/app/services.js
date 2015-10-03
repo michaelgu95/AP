@@ -91,6 +91,44 @@ angular.module('app.services', [])
 			        return {questions: questions, game: game, gameId: game.get("objectId")};
 			    },
 
+			    createGameWithSetName: function($scope, setName){
+        			var questions = new Array();
+        			game = new Game();
+        			var subject = subject;
+				    Parse.User.current().set("score", 0);
+				    Parse.User.current().save();
+
+				    var users = [Parse.User.current().get("username")];
+				    game.set("users", users);
+				   
+			        var Question = Parse.Object.extend("Question");
+			        var query = new Parse.Query(Question);
+			        query.equalTo("setName", setName);
+
+			        query.find().then(function(results) {
+			                $scope.$apply(function(){
+			                    for (i in results) {
+			                        var obj = results[i];
+			                        var title = obj.get("title");
+			                        var choices = obj.get("Answers");
+			                        var subject = obj.get("Subject");
+			                        var answer = obj.get("Answer");
+			                        questions.push({
+			                            title:title,
+			                            choices:choices,
+			                            subject:subject,
+			                            answer: answer
+			                        });
+			                    }
+			                    game.set("questions", questions);
+			                    game.set("subject", questions[0].subject);
+				        		game.save(null,{});
+				        		$scope.finished = true;
+			                })
+			        });
+			        return {questions: questions, game: game, gameId: game.get("objectId")};
+			    },
+
 			    createSecretGame: function($scope, subject, count, classKey){
 			    	var questions = new Array();
         			game = new Game();
@@ -131,6 +169,23 @@ angular.module('app.services', [])
 			                });
 			        });
 			        return {questions: questions, game: game, gameId: game.get("objectId")};
+			    },
+
+			    findSets: function(setName){
+			    	var Question = Parse.Object.extend("Question");
+			        var query = new Parse.Query(Question);
+			        query.equalTo("setName", setName);
+			        var matchedSets = [];
+
+			        query.find().then(function(results) {
+			        	console.log(results); 
+			        	if(results != []){
+			        		matchedSets.push(setName);
+			        	}  
+			            
+			        });
+
+			        return matchedSets;
 			    },
 
 			    checkAnswer : function(questions, questionIndex, answerIndex, user, $scope){
