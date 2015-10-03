@@ -1,7 +1,7 @@
 <ion-view title=>
-  <ion-nav-title ng-hide="waitingForOpponent">Time: 0:{{counter}}</ion-nav-title>
+  <ion-nav-title ng-hide="waitingForOpponent">Time: 0:{{counter}}  ||  Question {{currentQuestionIndex +1}}/{{questions.length}}</ion-nav-title>
 
-  <ion-nav-buttons side="left">
+  <ion-nav-buttons side="right">
         <a class="button icon-left ion-flag button-stable" ng-click="endGame()">End</a>
     </ion-nav-buttons>
    
@@ -10,9 +10,9 @@
           <button class="button-float" ng-class="$index==currentQuestionIndex? 'button-highlighted': 'button-unhighlighted'"></button>
         </div> --> 
           <div class="list card" ng-repeat="q in questions" ng-show="$index == currentQuestionIndex">
-            <progress value="{{$index/(questions.length)}}" max="questions.length">
+            <!-- <progress value="{{$index/(questions.length)}}" max="questions.length">
             {{$index}}
-            </progress>
+            </progress> -->
             <div class="item item-avatar item-positive">
               <img ng-src="{{getSubjectImage(q.subject)}}">
               <h2>{{q.subject}}</h2>
