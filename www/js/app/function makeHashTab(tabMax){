@@ -1,0 +1,14 @@
+function makeHashTab(tabMax){
+	var htobj = {
+		table: [],
+		max: tabMax,
+		nelts: 0,
+
+		insert: function(v){},
+		remove: function(v){},
+		find: function(v){},
+		
+	}	
+
+
+}

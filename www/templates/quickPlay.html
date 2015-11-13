@@ -7,14 +7,14 @@
 		<div class="card">
 
 				<div class="item item-divider">
-				    Search for Question Set:
+				    Search by Class:
 				</div>
 
 				<label class="item item-input">
 					
 						
 					    <i class="icon ion-search placeholder-icon"></i>
-					    <input type="text" ng-model="setFilter"  ng-change="findSet(setFilter)" placeholder="Set Name">
+					    <input type="text" ng-model="setFilter"  ng-change="findSet(setFilter)" placeholder="Class Key">
 				</label>
 
 						<label class="list" ng-repeat="set in questionSets">
@@ -23,12 +23,8 @@
 
 							   <div class="item-content">
 							   	{{set}}
-								
 							   </div>
 								<i class="radio-icon ion-checkmark"></i>
-							      
-							
-							   
 							</input>
 						    </div>
 						</label>

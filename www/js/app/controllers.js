@@ -348,6 +348,18 @@ angular.module('app.controllers', [])
     .controller('GameEndedCtrl', function($scope, $state, $stateParams, GameService, socket){
         $scope.score = Parse.User.current().get("score");
         $scope.wrongQuestions = $stateParams.wrongQuestions;
+        var setName;
+        if($stateParams.wrongQuestions.length > 0){
+            setName = $stateParams.wrongQuestions[0].setName;
+        }else if ($stateParams.correctQuestions.length > 0){
+            setName = $stateParams.correctQuestions[0].setName;
+        }else if($stateParams.unansweredQuestions.length > 0){
+            setName = $stateParams.unansweredQuestions[0].setName;
+        }
+
+        console.log(setName);
+        GameService.updateSet(setName, Parse.User.current(), $scope.score);
+        
         $scope.correctQuestions = $stateParams.correctQuestions;
         $scope.unansweredQuestions = $stateParams.unansweredQuestions;
         var savedQuestions = Parse.User.current().get("savedQuestions");

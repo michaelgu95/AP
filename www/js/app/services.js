@@ -113,11 +113,13 @@ angular.module('app.services', [])
 			                        var choices = obj.get("Answers");
 			                        var subject = obj.get("Subject");
 			                        var answer = obj.get("Answer");
+			                        var setName = obj.get("setName");
 			                        questions.push({
 			                            title:title,
 			                            choices:choices,
 			                            subject:subject,
-			                            answer: answer
+			                            answer: answer,
+			                            setName: setName
 			                        });
 			                    }
 			                    game.set("questions", questions);
@@ -171,20 +173,66 @@ angular.module('app.services', [])
 			        return {questions: questions, game: game, gameId: game.get("objectId")};
 			    },
 
-			    findSets: function(setName){
-			    	var Question = Parse.Object.extend("Question");
-			        var query = new Parse.Query(Question);
-			        query.equalTo("setName", setName);
-			        var matchedSets = [];
+			    updateSet: function(setName, user, score){
+			    	var SetHistory = Parse.Object.extend("SetHistory");
+			    	var sh = new SetHistory();
+			    	sh.set("name", setName);
 
-			        query.find().then(function(results) {
-			        	console.log(results); 
-			        	if(results != []){
-			        		matchedSets.push(setName);
-			        	}  
-			            
+			    	var setQuery = new Parse.Query(SetHistory);
+			    	setQuery.equalTo("name", setName);
+			    	setQuery.find().then(function(results){
+			    		if(results){
+			    			console.log(results);
+			    			sh = results[0];
+			    		}
+			    	})
+
+			    	sh.add("users", {email: user, score: score});
+			    	sh.save(null, {
+			    		success: function(set){
+			    			console.log(set);
+			    		}
+			    	});
+			    	
+			    },
+
+			    findSets: function(classKey){
+			    	//find class
+			    	var Class = Parse.Object.extend("Class");
+			    	var classQuery = new Parse.Query(Class);
+			    	classQuery.equalTo("classKey", classKey);
+			    	classQuery.limit(1);
+			    	var setNames = [];
+
+			    	//get setNames for the class
+			    	classQuery.find().then(function(result) {
+			        	console.log(result); 
+			        		var obj = result[0];
+			        		setNames = obj.get("setNames");
+			        		for(n in setNames){
+			        			setNames.push(n);
+			        			console.log(n);
+			        		}
 			        });
 
+			        console.log(setNames);
+
+			    	//query sets using setNames
+			    	var matchedSets = [];
+			    	if(setNames != []){
+			    		for(var i=0; i<setNames.length; i++){
+				    		var Question = Parse.Object.extend("Question");
+				        	var query = new Parse.Query(Question);
+				        	query.equalTo("setName", setNames[i]);
+				        	console.log(setNames[i]);
+				        	query.find().then(function(results) {
+					        	console.log(results); 
+					        	if(results != []){
+					        		matchedSets.push(setName);
+					        	}  
+				        	});
+			    		}
+			    	}
 			        return matchedSets;
 			    },
 
