@@ -103,7 +103,6 @@ angular.module('app.controllers', [])
                                 ]
                             })
                         }
-
                     } 
             });
 
@@ -499,17 +498,6 @@ angular.module('app.controllers', [])
                     $state.go('game', {'questions':game.questions, 'game':game.object, 'mode':"create"});
                 })
              }
-        }
-
-        $scope.gameLockOccurred = function(){
-            $ionicPopup.show({
-                title: 'Game Already In Progress',
-                subTitle: 'Another User has already joined this Game', 
-                buttons: [
-                    { text: 'OK', type: 'button-positive' }]
-            }).then(function(res) {
-                console.log('GameLock!');
-            });
         }
     })
 
